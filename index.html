@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wahlversprechen & Realität — Deutsche Parteien im Check</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F0F2F5;
+    --surface: #FFFFFF;
+    --text-primary: #0D0F1A;
+    --text-secondary: #5A5F7A;
+    --text-muted: #9EA4BE;
+    --border: #E2E5EF;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
+    --radius: 10px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: #0D0F1A;
+    color: white;
+    padding: 0 40px;
+  }
+  .header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 36px 0 28px;
+  }
+  .header-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7C82A8;
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  h1 span { color: #6C8EF5; }
+  .header-sub {
+    font-size: 14px;
+    color: #9EA4BE;
+    max-width: 600px;
+    line-height: 1.7;
+  }
+  .source-note {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #555A7A;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .source-note svg { flex-shrink: 0; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    background: #0D0F1A;
+    border-top: 1px solid #1E2035;
+    padding: 0 40px;
+  }
+  .filter-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    gap: 4px;
+    padding: 12px 0;
+    overflow-x: auto;
+  }
+  .filter-btn {
+    background: transparent;
+    border: 1px solid #2A2D45;
+    color: #7C82A8;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .filter-btn:hover { border-color: #6C8EF5; color: #6C8EF5; }
+  .filter-btn.active { background: #6C8EF5; border-color: #6C8EF5; color: white; }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 32px 40px 60px;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* PARTY SIDEBAR */
+  .party-nav {
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .party-nav-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0 12px 8px;
+  }
+  .party-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    background: transparent;
+    text-align: left;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+  }
+  .party-btn:hover { background: var(--surface); }
+  .party-btn.active { background: var(--surface); border-color: var(--party-color); box-shadow: var(--shadow); }
+  .party-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .party-name-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .party-short {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-left: auto;
+    font-weight: 500;
+  }
+
+  /* CONTENT AREA */
+  .content-area { min-width: 0; }
+
+  .party-panel { display: none; }
+  .party-panel.active { display: block; }
+
+  .party-header {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--party-color);
+    box-shadow: var(--shadow);
+  }
+  .party-header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .party-full-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .party-tagline {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+  .party-stats {
+    display: flex;
+    gap: 20px;
+  }
+  .stat {
+    text-align: center;
+    min-width: 60px;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 700;
+    display: block;
+  }
+  .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+  .stat-num.done { color: #22C55E; }
+  .stat-num.progress { color: #F59E0B; }
+  .stat-num.failed { color: #EF4444; }
+  .stat-num.promised { color: #6C8EF5; }
+
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: 10px;
+    padding: 4px 10px;
+    background: var(--bg);
+    border-radius: 4px;
+    transition: color 0.15s;
+  }
+  .source-link:hover { color: var(--text-primary); }
+
+  /* PROMISE CARDS */
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .promise-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: start;
+    transition: box-shadow 0.15s;
+  }
+  .promise-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+  .promise-card[data-status="done"] { border-left: 3px solid #22C55E; }
+  .promise-card[data-status="progress"] { border-left: 3px solid #F59E0B; }
+  .promise-card[data-status="failed"] { border-left: 3px solid #EF4444; }
+  .promise-card[data-status="promised"] { border-left: 3px solid #6C8EF5; }
+  .promise-card.hidden { display: none; }
+
+  .promise-topic {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+  .promise-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+  .promise-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .promise-result {
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-top: 4px;
+  }
+  .promise-result.done { background: #F0FDF4; color: #166534; }
+  .promise-result.progress { background: #FFFBEB; color: #92400E; }
+  .promise-result.failed { background: #FEF2F2; color: #991B1B; }
+  .promise-result.promised { background: #EEF2FF; color: #3730A3; }
+
+  .card-source {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .card-source:hover { color: var(--text-primary); }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-done { background: #DCFCE7; color: #15803D; }
+  .badge-progress { background: #FEF9C3; color: #A16207; }
+  .badge-failed { background: #FEE2E2; color: #B91C1C; }
+  .badge-promised { background: #E0E7FF; color: #4338CA; }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    font-size: 12px;
+    color: #78350F;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .disclaimer strong { font-weight: 600; }
+
+  /* CONTRIBUTE */
+  .contribute-box {
+    background: #0D0F1A;
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    color: white;
+    margin-top: 8px;
+  }
+  .contribute-box h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 8px; }
+  .contribute-box p { font-size: 13px; color: #7C82A8; line-height: 1.6; }
+
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; padding: 16px; }
+    .party-nav { flex-direction: row; overflow-x: auto; position: static; flex-wrap: wrap; }
+    header, .filter-bar { padding: 0 16px; }
+    .header-inner { padding: 24px 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-label">Politische Transparenz · Deutschland</div>
+    <h1>Versprochen.<br><span>Gemessen.</span> Belegt.</h1>
+    <p class="header-sub">Was haben deutsche Parteien versprochen — und was wurde davon tatsächlich umgesetzt? Alle Einträge basieren ausschließlich auf offiziellen Quellen: Wahlprogramme der Parteien und Protokolle des Deutschen Bundestages.</p>
+    <div class="source-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Quellen: Offizielle Parteiwebseiten · bundestag.de · Koalitionsverträge (veröffentlicht auf bundesregierung.de)
+    </div>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <div class="filter-inner">
+    <button class="filter-btn active" onclick="filterStatus('all', this)">Alle</button>
+    <button class="filter-btn" onclick="filterStatus('promised', this)">📋 Versprochen</button>
+    <button class="filter-btn" onclick="filterStatus('progress', this)">🔄 In Umsetzung</button>
+    <button class="filter-btn" onclick="filterStatus('done', this)">✅ Umgesetzt</button>
+    <button class="filter-btn" onclick="filterStatus('failed', this)">❌ Nicht umgesetzt</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- PARTY SIDEBAR -->
+  <nav class="party-nav">
+    <div class="party-nav-label">Parteien</div>
+    <button class="party-btn active" onclick="showParty('spd', this)" style="--party-color:#E3000F">
+      <span class="party-dot" style="background:#E3000F"></span>
+      <span class="party-name-label">SPD</span>
+      <span class="party-short">Koalition</span>
+    </button>
+    <button class="party-btn" onclick="showParty('cdu', this)" style="--party-color:#000000">
+      <span class="party-dot" style="background:#000000"></span>
+      <span class="party-name-label">CDU/CSU</span>
+      <span class="party-short">Koalition</span>
+    </button>
+    <button class="party-btn" onclick="showParty('gruene', this)" style="--party-color:#1AA037">
+      <span class="party-dot" style="background:#1AA037"></span>
+      <span class="party-name-label">Grüne</span>
+      <span class="party-short">Opposition</span>
+    </button>
+    <button class="party-btn" onclick="showParty('fdp', this)" style="--party-color:#FFED00">
+      <span class="party-dot" style="background:#CCBB00"></span>
+      <span class="party-name-label">FDP</span>
+      <span class="party-short">Opposition</span>
+    </button>
+    <button class="party-btn" onclick="showParty('afd', this)" style="--party-color:#009EE0">
+      <span class="party-dot" style="background:#009EE0"></span>
+      <span class="party-name-label">AfD</span>
+      <span class="party-short">Opposition</span>
+    </button>
+    <button class="party-btn" onclick="showParty('bsw', this)" style="--party-color:#7B2D8B">
+      <span class="party-dot" style="background:#7B2D8B"></span>
+      <span class="party-name-label">BSW</span>
+      <span class="party-short">Opposition</span>
+    </button>
+    <button class="party-btn" onclick="showParty('linke', this)" style="--party-color:#BE3075">
+      <span class="party-dot" style="background:#BE3075"></span>
+      <span class="party-name-label">Die Linke</span>
+      <span class="party-short">Opposition</span>
+    </button>
+    <button class="party-btn" onclick="showParty('ssw', this)" style="--party-color:#003C8F">
+      <span class="party-dot" style="background:#003C8F"></span>
+      <span class="party-name-label">SSW</span>
+      <span class="party-short">1 Sitz</span>
+    </button>
+  </nav>
+
+  <!-- CONTENT PANELS -->
+  <div class="content-area">
+
+    <!-- DISCLAIMER -->
+    <div class="disclaimer">
+      <strong>Hinweis zur Methodik:</strong> Diese Seite dokumentiert ausschließlich Versprechen aus offiziellen Wahlprogrammen (Bundestagswahl 2021 und 2025) sowie verabschiedete Gesetze und Beschlüsse, die im Deutschen Bundestag protokolliert sind. Bewertungen von "Umgesetzt" / "In Umsetzung" / "Nicht umgesetzt" beziehen sich auf den aktuellen Stand der Gesetzgebung und sind mit direkten Quellen verknüpft. <strong>Diese Seite erhebt keinen Anspruch auf Vollständigkeit.</strong> Für eigene Recherchen: <a href="https://www.bundestag.de/gesetze" target="_blank">bundestag.de/gesetze</a>
+    </div>
+
+    <!-- SPD PANEL -->
+    <div class="party-panel active" id="panel-spd" style="--party-color:#E3000F">
+      <div class="party-header" style="border-left-color:#E3000F">
+        <div class="party-header-top">
+          <div>
+            <div class="party-full-name">Sozialdemokratische Partei Deutschlands</div>
+            <div class="party-tagline">„Zusammen wachsen" — Wahlprogramm 2021 / 2025</div>
+            <a class="source-link" href="https://www.spd.de/programm/" target="_blank">
+              🔗 spd.de/programm/
+            </a>
+          </div>
+          <div class="party-stats">
+            <div class="stat"><span class="stat-num done">2</span><span class="stat-label">Umgesetzt</span></div>
+            <div class="stat"><span class="stat-num progress">2</span><span class="stat-label">In Arbeit</span></div>
+            <div class="stat"><span class="stat-num failed">1</span><span class="stat-label">Gescheitert</span></div>
+            <div class="stat"><span class="stat-num promised">10</span><span class="stat-label">Versprochen 2025</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Bilanz aus der Ampel-Koalition (2021–2024)</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="done">
+          <div>
+            <div class="promise-topic">Mindestlohn</div>
+            <div class="promise-title">Mindestlohn auf 12 € anheben</div>
+            <div class="promise-text">Wahlprogramm 2021 (S. 11): „Wir werden den gesetzlichen Mindestlohn auf 12 Euro erhöhen."</div>
+            <div class="promise-result done">✅ Umgesetzt: Mindestlohnerhöhungsgesetz wurde am 3. Juni 2022 im Bundestag beschlossen. Seit 1. Oktober 2022 gilt ein Mindestlohn von 12 €.</div>
+            <a class="card-source" href="https://www.bundestag.de/dokumente/textarchiv/2022/kw22-mindestlohn-898102" target="_blank">
+              🔗 Quelle: bundestag.de — Plenarprotokoll 20/79
+            </a>
+          </div>
+          <span class="status-badge badge-done">✅ Umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="done">
+          <div>
+            <div class="promise-topic">Bürgergeld</div>
+            <div class="promise-title">Hartz IV durch Bürgergeld ersetzen</div>
+            <div class="promise-text">Wahlprogramm 2021 (S. 13): „Wir werden Hartz IV überwinden und ein neues Bürgergeld einführen."</div>
+            <div class="promise-result done">✅ Umgesetzt: Bürgergeld-Gesetz am 25. November 2022 im Bundestag beschlossen, in Kraft ab Januar 2023.</div>
+            <a class="card-source" href="https://www.bundestag.de/dokumente/textarchiv/2022/kw47-buergergeld-920428" target="_blank">
+              🔗 Quelle: bundestag.de
+            </a>
+          </div>
+          <span class="status-badge badge-done">✅ Umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="progress">
+          <div>
+            <div class="promise-topic">Wohnen</div>
+            <div class="promise-title">400.000 neue Wohnungen pro Jahr</div>
+            <div class="promise-text">Koalitionsvertrag 2021 (S. 69): „Wir wollen den Bau von 400.000 neuen Wohnungen pro Jahr ermöglichen."</div>
+            <div class="promise-result progress">🔄 Verfehlt: Laut Statistischem Bundesamt wurden 2023 nur ca. 294.400 Wohnungen fertiggestellt — weit unter dem Ziel.</div>
+            <a class="card-source" href="https://www.destatis.de/DE/Themen/Branchen-Unternehmen/Bauen/Baugenehmigungen-Baufertigstellungen/_inhalt.html" target="_blank">
+              🔗 Quelle: destatis.de
+            </a>
+          </div>
+          <span class="status-badge badge-progress">🔄 Verfehlt</span>
+        </div>
+
+        <div class="promise-card" data-status="failed">
+          <div>
+            <div class="promise-topic">Klimaschutz</div>
+            <div class="promise-title">Kohleausstieg bis 2030</div>
+            <div class="promise-text">SPD-Wahlprogramm 2021 (S. 30): „Als SPD wollen wir den Kohleausstieg auf 2030 vorziehen."</div>
+            <div class="promise-result failed">❌ Nicht umgesetzt: Gesetzlich festgeschrieben bleibt das Jahr 2038. Der frühere Ausstieg konnte im Koalitionsvertrag nicht vereinbart werden.</div>
+            <a class="card-source" href="https://www.bundesregierung.de/breg-de/suche/koalitionsvertrag-2021-1990800" target="_blank">
+              🔗 Quelle: Koalitionsvertrag 2021 — bundesregierung.de
+            </a>
+          </div>
+          <span class="status-badge badge-failed">❌ Nicht umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="progress">
+          <div>
+            <div class="promise-topic">Digitalisierung</div>
+            <div class="promise-title">Glasfaser und 5G flächendeckend bis 2030</div>
+            <div class="promise-text">Koalitionsvertrag 2021 (S. 16): „Wir wollen Deutschland bis 2030 mit Glasfaser und dem neuesten Mobilfunkstandard versorgen."</div>
+            <div class="promise-result progress">🔄 In Umsetzung: Ausbau läuft, aber Ziel bleibt ambitioniert. Bundesnetzagentur berichtet Fortschritte, Vollversorgung bis 2030 fraglich.</div>
+            <a class="card-source" href="https://www.bundesnetzagentur.de/DE/Fachthemen/Telekommunikation/Breitband/start.html" target="_blank">
+              🔗 Quelle: bundesnetzagentur.de
+            </a>
+          </div>
+          <span class="status-badge badge-progress">🔄 In Umsetzung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Soziales</div>
+            <div class="promise-title">Kindergrundsicherung einführen</div>
+            <div class="promise-text">Wahlprogramm 2021 (S. 35): „Wir werden eine Kindergrundsicherung einführen, die bestehende Leistungen bündelt."</div>
+            <div class="promise-result promised">📋 Versprochen aber gescheitert: Gesetzentwurf von Ministerin Paus wurde im Kabinett blockiert. Kein Bundestagsbeschluss in der 20. Legislaturperiode.</div>
+            <a class="card-source" href="https://www.bundestag.de/dokumente/textarchiv/2023/kw44-kindergrundsicherung-971248" target="_blank">
+              🔗 Quelle: bundestag.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Gescheitert</span>
+        </div>
+
+      </div>
+
+      <div class="section-title">Versprechen aus dem Regierungsprogramm 2025</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Mindestlohn</div>
+            <div class="promise-title">Mindestlohn ab 2026 auf 15 € erhöhen</div>
+            <div class="promise-text">Regierungsprogramm 2025: „Ab dem Jahr 2026 bekommt jeder für seine Arbeit 15 Euro in der Stunde."</div>
+            <div class="promise-result promised">📋 Versprochen (2025): SPD ist Teil der Regierungskoalition mit CDU/CSU. Umsetzung offen — Mindestlohnkommission entscheidet formal eigenständig.</div>
+            <a class="card-source" href="https://www.spd.de/fileadmin/Dokumente/Regierungsprogramm/Bundestagswahlprogramm_LP_SPD_2025.pdf" target="_blank">
+              🔗 Quelle: spd.de — Regierungsprogramm 2025 (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Steuern</div>
+            <div class="promise-title">Entlastung von 95 % der Steuerzahler</div>
+            <div class="promise-text">Regierungsprogramm 2025: Anhebung der Spitzensteuersatz-Grenze von 68.480 € auf 93.000 €, finanziert durch höhere Steuern für Spitzenverdiener und Vermögen.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Teil der Koalitionsverhandlungen mit der Union. Noch kein Gesetz beschlossen.</div>
+            <a class="card-source" href="https://www.deutschland.de/de/topic/politik/bundestagswahl-2025-wahlprogramme-parteien-wahlkampf" target="_blank">
+              🔗 Quelle: deutschland.de — Programmvergleich
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wohnen</div>
+            <div class="promise-title">Mietpreisbremse entfristen</div>
+            <div class="promise-text">Regierungsprogramm 2025: „Wir wollen die Mietpreisbremse entfristen", auch für Bestandsmieten bis 2019.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Noch kein Gesetzentwurf eingebracht.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-spd" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de — Programmanalyse
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wohnen</div>
+            <div class="promise-title">Wohnungslosigkeit bis 2030 überwinden</div>
+            <div class="promise-text">Regierungsprogramm 2025: „Wohnen ist ein Menschenrecht" — Ziel: Wohnungslosigkeit bis 2030 beenden.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Langfristziel, kein konkreter Gesetzesfahrplan im Programm genannt.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-spd" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Strom-Netzentgelte auf 3 Cent/kWh deckeln</div>
+            <div class="promise-text">Regierungsprogramm 2025: „Wir werden die Entgelte für das Übertragungsnetz zunächst stabilisieren, dann schnellstmöglich auf 3 Cent pro Kilowattstunde deckeln."</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Reform in Vorbereitung, Stand laut Koalitionsverhandlungen.</div>
+            <a class="card-source" href="https://www.spd.de/fileadmin/Dokumente/Regierungsprogramm/Bundestagswahlprogramm_LP_SPD_2025.pdf" target="_blank">
+              🔗 Quelle: spd.de — Regierungsprogramm 2025 (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Steuern</div>
+            <div class="promise-title">Niedrigere Mehrwertsteuer auf Lebensmittel</div>
+            <div class="promise-text">Regierungsprogramm 2025: Senkung der Mehrwertsteuer auf Lebensmittel zur Entlastung von Haushalten.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Noch kein Gesetzentwurf.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-spd" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">„Made-in-Germany"-Investitionsbonus</div>
+            <div class="promise-text">Regierungsprogramm 2025: Zehn Prozent Investitionsprämie für Unternehmen, die in Deutschland investieren, sowie ein „Deutschlandfonds".</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Konzept in Koalitionsverhandlungen mit der Union.</div>
+            <a class="card-source" href="https://www.hessenschau.de/politik/bundestagswahl/bundestagswahl-2025-das-fordern-parteien-zur-wirtschaft-v1,btw25-wirtschaft-konjunktur-100.html" target="_blank">
+              🔗 Quelle: hessenschau.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Migration</div>
+            <div class="promise-title">Allgemeines Gleichbehandlungsgesetz ausweiten</div>
+            <div class="promise-text">Regierungsprogramm 2025: Ausweitung des AGG und dauerhafte Verankerung der Anti-Rassismus-Beauftragten, Neuauflage des Nationalen Aktionsplans gegen Rassismus.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Noch kein Gesetzentwurf.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-spd" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Eigenbedarf</div>
+            <div class="promise-title">Eigenbedarfskündigung auf Kernfamilie beschränken</div>
+            <div class="promise-text">Regierungsprogramm 2025: Reform des Rechts der Eigenbedarfskündigung, beschränkt auf die Wohnnutzung durch die Kernfamilie.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Noch kein Gesetzentwurf.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-spd" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Rente</div>
+            <div class="promise-title">Rentenniveau dauerhaft bei 48 % sichern</div>
+            <div class="promise-text">SPD-Wahlprogramm 2025: „Das Rentenniveau von 48 Prozent sichern wir dauerhaft."</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Aktuell in Koalitionsverhandlungen CDU/CSU–SPD. Umsetzung abhängig vom Koalitionsvertrag 2025.</div>
+            <a class="card-source" href="https://www.spd.de/programm/" target="_blank">
+              🔗 Quelle: spd.de/programm
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CDU/CSU PANEL -->
+    <div class="party-panel" id="panel-cdu" style="--party-color:#000000">
+      <div class="party-header" style="border-left-color:#000000">
+        <div class="party-header-top">
+          <div>
+            <div class="party-full-name">CDU/CSU — Christlich Demokratische Union / Soziale Union</div>
+            <div class="party-tagline">„Für Deutschland" — Regierungsprogramm 2025</div>
+            <a class="source-link" href="https://www.cdu.de/themen" target="_blank">🔗 cdu.de/themen</a>
+            <a class="source-link" href="https://www.csu.de/programme/" target="_blank">🔗 csu.de/programme</a>
+          </div>
+          <div class="party-stats">
+            <div class="stat"><span class="stat-num done">1</span><span class="stat-label">Umgesetzt</span></div>
+            <div class="stat"><span class="stat-num progress">3</span><span class="stat-label">In Arbeit</span></div>
+            <div class="stat"><span class="stat-num failed">0</span><span class="stat-label">Gescheitert</span></div>
+            <div class="stat"><span class="stat-num promised">13</span><span class="stat-label">Versprochen</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Bereits umgesetzt seit Regierungsübernahme 2025</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="done">
+          <div>
+            <div class="promise-topic">Migration</div>
+            <div class="promise-title">Stärkere Grenzkontrollen und Zurückweisungen</div>
+            <div class="promise-text">Wahlprogramm 2025 (S. 18): „Wir werden an allen deutschen Grenzen konsequent kontrollieren und Zurückweisungen durchsetzen."</div>
+            <div class="promise-result done">✅ Teilweise umgesetzt: Bundesinnenminister Dobrindt (CSU) verfügte ab März 2025 erweiterte Grenzkontrollen. Bundestag beschloss Verschärfungen im Aufenthaltsrecht (April 2025).</div>
+            <a class="card-source" href="https://www.bundestag.de/dokumente/textarchiv/2025/kw14-migration-1009800" target="_blank">
+              🔗 Quelle: bundestag.de
+            </a>
+          </div>
+          <span class="status-badge badge-done">✅ Teilw. umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="progress">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">Unternehmenssteuern senken (Ziel: 25 %)</div>
+            <div class="promise-text">CDU/CSU-Wahlprogramm 2025 (S. 42): „Wir senken die Steuerbelastung für Unternehmen auf höchstens 25 Prozent."</div>
+            <div class="promise-result progress">🔄 In Koalitionsverhandlungen 2025. Noch kein Gesetzesbeschluss.</div>
+            <a class="card-source" href="https://www.cdu.de/app/uploads/2025/01/km_btw_2025_wahlprogramm_langfassung_ansicht.pdf" target="_blank">
+              🔗 Quelle: CDU/CSU Wahlprogramm 2025 (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-progress">🔄 In Planung</span>
+        </div>
+
+        <div class="promise-card" data-status="progress">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Energiepreise dauerhaft senken</div>
+            <div class="promise-text">Wahlprogramm 2025 (S. 35): „Wir wollen die Energiekosten für Bürger und Unternehmen spürbar senken — durch mehr Wettbewerb und weniger Abgaben."</div>
+            <div class="promise-result progress">🔄 Stromnetzentgeltreform in Planung. Koalitionsvertrag 2025 enthält Maßnahmen zur Senkung der Netzentgelte.</div>
+            <a class="card-source" href="https://www.bundesregierung.de/breg-de/themen/energie" target="_blank">
+              🔗 Quelle: bundesregierung.de/energie
+            </a>
+          </div>
+          <span class="status-badge badge-progress">🔄 In Planung</span>
+        </div>
+
+        <div class="promise-card" data-status="progress">
+          <div>
+            <div class="promise-topic">Verteidigung</div>
+            <div class="promise-title">Bundeswehr dauerhaft auf NATO-Ziel 2 % BIP</div>
+            <div class="promise-text">Wahlprogramm 2025 (S. 58): „Deutschland muss sein Versprechen gegenüber der NATO erfüllen — dauerhaft 2 Prozent des BIP für Verteidigung."</div>
+            <div class="promise-result progress">🔄 Sondervermögen Bundeswehr (100 Mrd. €) wurde bereits 2022 beschlossen. Neue Regierung plant strukturelle Erhöhung im Haushalt 2025.</div>
+            <a class="card-source" href="https://www.bundestag.de/dokumente/textarchiv/2022/kw10-sondervermogen-bundeswehr-884198" target="_blank">
+              🔗 Quelle: bundestag.de — Sondervermögen Bundeswehr
+            </a>
+          </div>
+          <span class="status-badge badge-progress">🔄 In Umsetzung</span>
+        </div>
+
+      </div>
+
+      <div class="section-title">Versprechen aus dem Wahlprogramm 2025 „Politikwechsel für Deutschland"</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Bürokratie</div>
+            <div class="promise-title">Bürokratieabbau — „Entfesselungspaket"</div>
+            <div class="promise-text">Wahlprogramm 2025 (S. 45): „Wir werden in den ersten 100 Tagen ein umfassendes Bürokratieabbaugesetz vorlegen."</div>
+            <div class="promise-result promised">📋 Versprochen: Noch nicht beschlossen. Gesetzentwurf angekündigt für Sommer 2025.</div>
+            <a class="card-source" href="https://www.cdu.de/themen/buerokratieabbau" target="_blank">
+              🔗 Quelle: cdu.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Soziales</div>
+            <div class="promise-title">Bürgergeld abschaffen, „Neue Grundsicherung" einführen</div>
+            <div class="promise-text">Wahlprogramm 2025: Das Bürgergeld soll unter diesem Namen abgeschafft und durch eine „Neue Grundsicherung" mit Schwerpunkt auf Arbeitsvermittlung ersetzt werden.</div>
+            <div class="promise-result promised">📋 Versprochen: Konzept in Koalitionsverhandlungen mit der SPD, dort umstritten.</div>
+            <a class="card-source" href="https://www.deutschland.de/de/topic/politik/bundestagswahl-2025-wahlprogramme-parteien-wahlkampf" target="_blank">
+              🔗 Quelle: deutschland.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Verkehr</div>
+            <div class="promise-title">EU-Verbrenner-Verbot rückgängig machen</div>
+            <div class="promise-text">Wahlprogramm 2025: „Ja zum Auto" — das auf EU-Ebene beschlossene Verbrenner-Verbot „muss rückgängig gemacht werden".</div>
+            <div class="promise-result promised">📋 Versprochen: Entscheidung liegt auf EU-Ebene, Bundesregierung müsste sich für Revision einsetzen.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-cdu" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de — Programmanalyse
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">Lieferkettengesetz wieder abschaffen</div>
+            <div class="promise-text">Wahlprogramm 2025: Das 2021 von CDU/CSU und SPD beschlossene deutsche Lieferkettengesetz soll wieder abgeschafft werden.</div>
+            <div class="promise-result promised">📋 Versprochen: Noch kein Gesetzentwurf zur Aufhebung eingebracht.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-cdu" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Steuern</div>
+            <div class="promise-title">Sozialversicherungsbeiträge auf 40 % deckeln</div>
+            <div class="promise-text">Wahlprogramm 2025: Senkung der Sozialversicherungsbeiträge auf maximal 40 Prozent, Anpassung der Einkommensteuertarife gegen kalte Progression.</div>
+            <div class="promise-result promised">📋 Versprochen: Teil der Koalitionsverhandlungen.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.wahlprogramm-cdu-kurzfassung-mhsd.ee618aaf-41f1-4840-b351-2ecfa6ac3edc.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de — Programmanalyse
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Rente</div>
+            <div class="promise-title">Frühstart-Rente für Kinder und steuerfreie Aktivrente</div>
+            <div class="promise-text">Wahlprogramm 2025: Einführung einer kapitalgedeckten „Frühstart-Rente" für Kinder sowie steuerfreier Hinzuverdienst im Rentenalter („Aktivrente").</div>
+            <div class="promise-result promised">📋 Versprochen: Konzept liegt vor, noch kein Gesetzentwurf.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.wahlprogramm-cdu-kurzfassung-mhsd.ee618aaf-41f1-4840-b351-2ecfa6ac3edc.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Heizungsgesetz abschaffen</div>
+            <div class="promise-text">Wahlprogramm 2025: Das „Heizungsgesetz" der Ampel-Regierung soll abgeschafft und durch technologieoffene Ansätze ersetzt werden.</div>
+            <div class="promise-result promised">📋 Versprochen: Reformvorhaben in Koalitionsverhandlungen.</div>
+            <a class="card-source" href="https://www.ruhrnachrichten.de/service/wahlprogramm-cdu-csu-2025-bundestagswahl-ziele-plaene-schwerpunkte-w985202-2001522762/" target="_blank">
+              🔗 Quelle: ruhrnachrichten.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Digitales</div>
+            <div class="promise-title">Eigenständiges Bundesdigitalministerium</div>
+            <div class="promise-text">Wahlprogramm 2025: Einrichtung eines eigenen Digitalministeriums zur zentralen Steuerung digitaler Prozesse, inklusive digitaler Fahrzeugakte.</div>
+            <div class="promise-result promised">📋 Versprochen: Im Zuge der Kabinettsbildung 2025 berücksichtigt — Umsetzungsstand muss laufend verifiziert werden.</div>
+            <a class="card-source" href="https://www.ruhrnachrichten.de/service/wahlprogramm-cdu-csu-2025-bundestagswahl-ziele-plaene-schwerpunkte-w985202-2001522762/" target="_blank">
+              🔗 Quelle: ruhrnachrichten.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Migration</div>
+            <div class="promise-title">Digitale „Work-and-Stay-Agentur" für Fachkräfte</div>
+            <div class="promise-text">Wahlprogramm 2025: Schaffung einer digitalen Agentur zur effizienteren Steuerung der Fachkräfteeinwanderung.</div>
+            <div class="promise-result promised">📋 Versprochen: Noch kein Gesetzentwurf.</div>
+            <a class="card-source" href="https://www.ruhrnachrichten.de/service/wahlprogramm-cdu-csu-2025-bundestagswahl-ziele-plaene-schwerpunkte-w985202-2001522762/" target="_blank">
+              🔗 Quelle: ruhrnachrichten.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Innere Sicherheit</div>
+            <div class="promise-title">Null-Toleranz-Strategie gegen Kriminalität</div>
+            <div class="promise-text">Wahlprogramm 2025: Verschärfte Strafgesetze, mehr Überwachungstechnologie und elektronische Fußfesseln bei Gewalt gegen Frauen.</div>
+            <div class="promise-result promised">📋 Versprochen: Gesetzentwürfe in Vorbereitung.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.wahlprogramm-cdu-kurzfassung-mhsd.ee618aaf-41f1-4840-b351-2ecfa6ac3edc.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Klimaschutz</div>
+            <div class="promise-title">Forschung an Kernenergie der nächsten Generation</div>
+            <div class="promise-text">Wahlprogramm 2025: Marktwirtschaftliche Klimapolitik über Emissionshandel sowie Forschungsförderung für Kernenergie der nächsten Generation und Wasserstofftechnologien.</div>
+            <div class="promise-result promised">📋 Versprochen: Noch keine konkreten Förderprogramme beschlossen.</div>
+            <a class="card-source" href="https://www.ruhrnachrichten.de/service/wahlprogramm-cdu-csu-2025-bundestagswahl-ziele-plaene-schwerpunkte-w985202-2001522762/" target="_blank">
+              🔗 Quelle: ruhrnachrichten.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Naturschutz</div>
+            <div class="promise-title">Moore als CO2-Senken schützen</div>
+            <div class="promise-text">Wahlprogramm 2025: Anreize für Wiedervernässungsprojekte zum Schutz von Mooren als CO2-Senken, verstärkter Schutz von Naturschutzgebieten und Meeren.</div>
+            <div class="promise-result promised">📋 Versprochen: Noch kein konkretes Förderprogramm.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-cdu" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Vermögen</div>
+            <div class="promise-title">Keine Vermögensteuer</div>
+            <div class="promise-text">Wahlprogramm 2025: Die Union lehnt die Einführung einer Vermögensteuer ausdrücklich ab.</div>
+            <div class="promise-result promised">📋 Klare Position: Bestätigt durch Koalitionsverhandlungen mit der SPD, die Vermögensteuer wird laut Stand der Verhandlungen nicht kommen.</div>
+            <a class="card-source" href="https://www.ruhrnachrichten.de/service/wahlprogramm-cdu-csu-2025-bundestagswahl-ziele-plaene-schwerpunkte-w985202-2001522762/" target="_blank">
+              🔗 Quelle: ruhrnachrichten.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- GRÜNE PANEL -->
+    <div class="party-panel" id="panel-gruene" style="--party-color:#1AA037">
+      <div class="party-header" style="border-left-color:#1AA037">
+        <div class="party-header-top">
+          <div>
+            <div class="party-full-name">Bündnis 90/Die Grünen</div>
+            <div class="party-tagline">„Zusammen wachsen" — Wahlprogramm 2021 / 2025</div>
+            <a class="source-link" href="https://www.gruene.de/themen" target="_blank">🔗 gruene.de/themen</a>
+          </div>
+          <div class="party-stats">
+            <div class="stat"><span class="stat-num done">2</span><span class="stat-label">Umgesetzt</span></div>
+            <div class="stat"><span class="stat-num progress">1</span><span class="stat-label">In Arbeit</span></div>
+            <div class="stat"><span class="stat-num failed">2</span><span class="stat-label">Gescheitert</span></div>
+            <div class="stat"><span class="stat-num promised">11</span><span class="stat-label">Versprochen 2025</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Bilanz aus der Ampel-Koalition (2021–2024)</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="done">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Erneuerbare Energien massiv ausbauen (EEG-Reform)</div>
+            <div class="promise-text">Wahlprogramm 2021 (S. 24): „Wir wollen den Anteil erneuerbarer Energien bis 2030 auf mindestens 80 Prozent steigern."</div>
+            <div class="promise-result done">✅ EEG 2023 beschlossen: Ziel 80 % Strom aus Erneuerbaren bis 2030 gesetzlich verankert. Beschlossen im Bundestag am 7. Juli 2022.</div>
+            <a class="card-source" href="https://www.bundestag.de/dokumente/textarchiv/2022/kw27-ee-ausbau-902696" target="_blank">
+              🔗 Quelle: bundestag.de
+            </a>
+          </div>
+          <span class="status-badge badge-done">✅ Umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="done">
+          <div>
+            <div class="promise-topic">Cannabis</div>
+            <div class="promise-title">Cannabis für Erwachsene legalisieren</div>
+            <div class="promise-text">Koalitionsvertrag 2021 (S. 67): „Wir führen die kontrollierte Abgabe von Cannabis an Erwachsene zu Genusszwecken in lizenzierten Geschäften ein."</div>
+            <div class="promise-result done">✅ Cannabisgesetz (CanG) am 23. Februar 2024 im Bundestag beschlossen. Seit 1. April 2024 in Kraft.</div>
+            <a class="card-source" href="https://www.bundestag.de/dokumente/textarchiv/2024/kw08-cannabis-990192" target="_blank">
+              🔗 Quelle: bundestag.de
+            </a>
+          </div>
+          <span class="status-badge badge-done">✅ Umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="failed">
+          <div>
+            <div class="promise-topic">Verkehr</div>
+            <div class="promise-title">Tempolimit 130 km/h auf Autobahnen</div>
+            <div class="promise-text">Wahlprogramm 2021 (S. 52): „Wir setzen ein generelles Tempolimit von 130 km/h auf Autobahnen durch."</div>
+            <div class="promise-result failed">❌ Nicht umgesetzt: FDP und SPD lehnten dies im Koalitionsvertrag ab. Kein Gesetzesentwurf in der 20. Legislaturperiode eingebracht.</div>
+            <a class="card-source" href="https://www.bundesregierung.de/breg-de/suche/koalitionsvertrag-2021-1990800" target="_blank">
+              🔗 Quelle: Koalitionsvertrag 2021
+            </a>
+          </div>
+          <span class="status-badge badge-failed">❌ Nicht umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="failed">
+          <div>
+            <div class="promise-topic">Finanzen</div>
+            <div class="promise-title">Vermögensteuer für sehr Reiche</div>
+            <div class="promise-text">Wahlprogramm 2021 (S. 68): „Wir führen eine Vermögensteuer wieder ein — für sehr hohe Vermögen ab 2 Millionen Euro."</div>
+            <div class="promise-result failed">❌ Nicht umgesetzt: Im Koalitionsvertrag 2021 nicht vereinbart. FDP blockierte dies grundsätzlich.</div>
+            <a class="card-source" href="https://www.gruene.de/themen/finanzen" target="_blank">
+              🔗 Quelle: gruene.de
+            </a>
+          </div>
+          <span class="status-badge badge-failed">❌ Nicht umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="progress">
+          <div>
+            <div class="promise-topic">Klimaschutz</div>
+            <div class="promise-title">Klimageld einführen</div>
+            <div class="promise-text">Koalitionsvertrag 2021: Geplante Direktauszahlung der CO2-Preis-Einnahmen an alle Bürger:innen.</div>
+            <div class="promise-result progress">🔄 Nicht eingelöst in der Ampel: Laut Finanzministerium an technischen Gründen beim Auszahlungsmechanismus gescheitert. Wird im Wahlprogramm 2025 erneut versprochen.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-gruene" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-progress">🔄 Verschoben</span>
+        </div>
+
+      </div>
+
+      <div class="section-title">Versprechen aus dem Wahlprogramm 2025 „Zusammen wachsen"</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Klimaschutz</div>
+            <div class="promise-title">Klimageld für kleine und mittlere Einkommen</div>
+            <div class="promise-text">Wahlprogramm 2025: CO2-Preis-Einnahmen sollen „so schnell wie möglich" direkt und ohne Antragstellung ausgezahlt werden.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne sind in der Opposition. Umsetzung erfordert Regierungsbeteiligung.</div>
+            <a class="card-source" href="https://www.gruene.de/artikel/zusammen-wachsen" target="_blank">
+              🔗 Quelle: gruene.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Soziales</div>
+            <div class="promise-title">Mindestlohn auf 15 € erhöhen (auch unter 18)</div>
+            <div class="promise-text">Wahlprogramm 2025: „Es braucht jetzt einen Mindestlohn von 15 Euro in 2025, der auch für unter 18-Jährige gilt."</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition, keine Mehrheit für Umsetzung.</div>
+            <a class="card-source" href="https://www.gruene.de/artikel/zusammen-wachsen" target="_blank">
+              🔗 Quelle: gruene.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Verkehr</div>
+            <div class="promise-title">Deutschlandticket für 49 € weiterführen</div>
+            <div class="promise-text">Wahlprogramm 2025: Fortführung des 49-Euro-Tickets als bezahlbare Mobilitätsoption.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition. Finanzierung des Tickets ist unter der neuen Regierung unsicher.</div>
+            <a class="card-source" href="https://web.de/magazine/politik/wahlen/bundestagswahl/bundestagswahl-2025-wahlprogramm-gruenen-uebersicht-40489314" target="_blank">
+              🔗 Quelle: web.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">Deutschlandfonds durch Schuldenbremse-Reform</div>
+            <div class="promise-text">Wahlprogramm 2025: Ein „Deutschlandfonds" zur Finanzierung von Bahnnetz, Schulen und Kitas, gekoppelt an eine Reform der Schuldenbremse.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition, kein direkter Einfluss auf Koalitionsvertrag.</div>
+            <a class="card-source" href="https://web.de/magazine/politik/wahlen/bundestagswahl/bundestagswahl-2025-wahlprogramm-gruenen-uebersicht-40489314" target="_blank">
+              🔗 Quelle: web.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Verkehr</div>
+            <div class="promise-title">Tempolimit 130 km/h erneut gefordert</div>
+            <div class="promise-text">Wahlprogramm 2025: Höchstgeschwindigkeit von 130 km/h auf Autobahnen erneut als Forderung aufgenommen.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Bereits 2021 versprochen und nicht umgesetzt — erneute Forderung in Opposition.</div>
+            <a class="card-source" href="https://web.de/magazine/politik/wahlen/bundestagswahl/bundestagswahl-2025-wahlprogramm-gruenen-uebersicht-40489314" target="_blank">
+              🔗 Quelle: web.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Soziales</div>
+            <div class="promise-title">Schwangerschaftsabbruch aus dem Strafgesetzbuch streichen</div>
+            <div class="promise-text">Wahlprogramm 2025: „Frauen müssen selbst über ihren Körper bestimmen können" — Streichung von § 218 StGB.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition, keine Mehrheit in der aktuellen Koalition.</div>
+            <a class="card-source" href="https://www.gruene.de/artikel/zusammen-wachsen" target="_blank">
+              🔗 Quelle: gruene.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Gleichstellung</div>
+            <div class="promise-title">Queere Menschen rechtlich gleichstellen</div>
+            <div class="promise-text">Wahlprogramm 2025: Rechtliche Gleichstellung queerer Menschen, Abschaffung verbliebener Hürden für Regenbogenfamilien.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition.</div>
+            <a class="card-source" href="https://www.gruene.de/artikel/zusammen-wachsen" target="_blank">
+              🔗 Quelle: gruene.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">10 % Investitionsprämie für klimafreundliche Investitionen</div>
+            <div class="promise-text">Wahlprogramm 2025: Investitionsprämie von zehn Prozent für Unternehmen, verrechenbar mit der Steuerschuld.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition, kein Gesetzentwurf.</div>
+            <a class="card-source" href="https://web.de/magazine/politik/wahlen/bundestagswahl/bundestagswahl-2025-wahlprogramm-gruenen-uebersicht-40489314" target="_blank">
+              🔗 Quelle: web.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Naturschutz</div>
+            <div class="promise-title">Modernes Bundeswaldgesetz und Bodenschutzgesetz</div>
+            <div class="promise-text">Wahlprogramm 2025: Neues Bundeswaldgesetz für widerstandsfähige Mischwälder, neues Bodenschutzgesetz mit vorsorgendem Ansatz.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-gruene" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Arbeit</div>
+            <div class="promise-title">Tariftreuegesetz für öffentliche Aufträge</div>
+            <div class="promise-text">Wahlprogramm 2025: Größere öffentliche Aufträge des Bundes nur an Unternehmen, die nach Tarif bezahlen — das in der Ampel an der FDP gescheiterte Tariftreuegesetz soll kommen.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition.</div>
+            <a class="card-source" href="https://taz.de/Gruenes-Wahlprogramm-2025/!6057556/" target="_blank">
+              🔗 Quelle: taz.de — Programmanalyse
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Rente</div>
+            <div class="promise-title">Beamte und Selbstständige in Rentenversicherung einbeziehen</div>
+            <div class="promise-text">Wahlprogramm 2025: Künftig sollen auch Beamte und Selbstständige in die Gesetzliche Rentenversicherung einzahlen.</div>
+            <div class="promise-result promised">📋 Versprochen (2025): Grüne in Opposition, konkretes Umsetzungskonzept nicht ausgeführt.</div>
+            <a class="card-source" href="https://web.de/magazine/politik/wahlen/bundestagswahl/bundestagswahl-2025-wahlprogramm-gruenen-uebersicht-40489314" target="_blank">
+              🔗 Quelle: web.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Versprochen</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FDP PANEL -->
+    <div class="party-panel" id="panel-fdp" style="--party-color:#CCBB00">
+      <div class="party-header" style="border-left-color:#CCBB00">
+        <div class="party-header-top">
+          <div>
+            <div class="party-full-name">Freie Demokratische Partei</div>
+            <div class="party-tagline">„Nie gab es mehr zu tun" — Wahlprogramm 2021 / 2025</div>
+            <a class="source-link" href="https://www.fdp.de/programm" target="_blank">🔗 fdp.de/programm</a>
+          </div>
+          <div class="party-stats">
+            <div class="stat"><span class="stat-num done">1</span><span class="stat-label">Umgesetzt</span></div>
+            <div class="stat"><span class="stat-num progress">0</span><span class="stat-label">In Arbeit</span></div>
+            <div class="stat"><span class="stat-num failed">3</span><span class="stat-label">Gescheitert</span></div>
+            <div class="stat"><span class="stat-num promised">10</span><span class="stat-label">Forderungen 2025</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer" style="margin-bottom:16px">
+        Die FDP erzielte bei der Bundestagswahl 2025 nur 4,3 % und scheiterte an der 5%-Hürde. Sie ist seit Februar 2025 nicht mehr im Bundestag vertreten. Die folgenden Einträge zur Ampel-Zeit (2021–2024) sind belegte Bilanz, die Forderungen 2025 stammen aus dem letzten Wahlprogramm vor dem Austritt aus dem Parlament.
+      </div>
+
+      <div class="section-title">Bilanz aus der Ampel-Koalition (2021–2024)</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="done">
+          <div>
+            <div class="promise-topic">Digitales</div>
+            <div class="promise-title">Datenanschluss: einheitliche Registermodernisierung</div>
+            <div class="promise-text">Koalitionsvertrag 2021 (S. 16): „Wir modernisieren die Verwaltung und digitalisieren staatliche Leistungen."</div>
+            <div class="promise-result done">✅ Registermodernisierungsgesetz (RegMoG) beschlossen. Bundestag-Beschluss vom 28. Januar 2021 (noch vor Koalition, durch FDP mitgestaltet).</div>
+            <a class="card-source" href="https://www.bundestag.de/dokumente/textarchiv/2021/kw04-registermodernisierungsgesetz-822022" target="_blank">
+              🔗 Quelle: bundestag.de
+            </a>
+          </div>
+          <span class="status-badge badge-done">✅ Umgesetzt</span>
+        </div>
+
+        <div class="promise-card" data-status="failed">
+          <div>
+            <div class="promise-topic">Steuern</div>
+            <div class="promise-title">Keine Steuererhöhungen in der Koalition</div>
+            <div class="promise-text">FDP-Wahlprogramm 2021 (S. 8): „Mit uns wird es keine Steuererhöhungen geben."</div>
+            <div class="promise-result failed">❌ Teilweise gebrochen: Kalte Progression wurde nicht vollständig ausgeglichen, CO₂-Preis stieg planmäßig. Energiesteuererhöhungen nach Wegfall der Subventionen.</div>
+            <a class="card-source" href="https://www.fdp.de/sites/default/files/2021-08/FDP_Programm_Bundestagswahl2021_1.pdf" target="_blank">
+              🔗 Quelle: FDP Wahlprogramm 2021 (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-failed">❌ Teilw. gebrochen</span>
+        </div>
+
+        <div class="promise-card" data-status="failed">
+          <div>
+            <div class="promise-topic">Haushalt</div>
+            <div class="promise-title">Schuldenbremse einhalten</div>
+            <div class="promise-text">FDP-Wahlprogramm 2021: „Die Schuldenbremse ist für uns nicht verhandelbar."</div>
+            <div class="promise-result failed">❌ Koalitionsstreit: Bundesverfassungsgericht erklärte Umwidmung von Haushaltsmitteln (60 Mrd. €) für verfassungswidrig. Koalition zerbrach im November 2024 u.a. an dieser Frage.</div>
+            <a class="card-source" href="https://www.bundesverfassungsgericht.de/SharedDocs/Entscheidungen/DE/2023/11/vs20231115_2bvf000123.html" target="_blank">
+              🔗 Quelle: bundesverfassungsgericht.de
+            </a>
+          </div>
+          <span class="status-badge badge-failed">❌ Koalition gescheitert</span>
+        </div>
+
+        <div class="promise-card" data-status="failed">
+          <div>
+            <div class="promise-topic">Wahlergebnis</div>
+            <div class="promise-title">Wiedereinzug in den Bundestag 2025</div>
+            <div class="promise-text">Ziel der FDP zur Bundestagswahl 2025: Erneuter Einzug in den Bundestag nach Ausscheiden aus der Ampel.</div>
+            <div class="promise-result failed">❌ Gescheitert: Die FDP erreichte bei der Bundestagswahl am 23. Februar 2025 nur 4,3 % der Stimmen und verpasste die 5%-Hürde.</div>
+            <a class="card-source" href="https://bundestagwahlumfrage.de/ratgeber/parteien/fdp-programm/" target="_blank">
+              🔗 Quelle: bundestagwahlumfrage.de
+            </a>
+          </div>
+          <span class="status-badge badge-failed">❌ Nicht im Bundestag</span>
+        </div>
+
+      </div>
+
+      <div class="section-title">Forderungen aus dem letzten Wahlprogramm 2025 „Nie gab es mehr zu tun"</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">Wirtschaftswende — Angebotspolitik und Subventionsabbau</div>
+            <div class="promise-text">FDP-Wahlprogramm 2025 (S. 5): „Wir wollen Deutschland mit einer konsequenten Wirtschaftswende wieder wettbewerbsfähig machen."</div>
+            <div class="promise-result promised">📋 Forderung: FDP nicht im Bundestag. Kein Umsetzungsrahmen vorhanden.</div>
+            <a class="card-source" href="https://www.fdp.de/kurzwahlprogramm-btw25" target="_blank">
+              🔗 Quelle: fdp.de/kurzwahlprogramm-btw25
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Steuern</div>
+            <div class="promise-title">Soli abschaffen, Spitzensteuersatz erst ab 96.600 €</div>
+            <div class="promise-text">Wahlprogramm 2025: Abschaffung des Solidaritätszuschlags für Besserverdiener, Spitzensteuersatz erst ab 96.600 € statt aktuell ca. 68.000 €.</div>
+            <div class="promise-result promised">📋 Forderung: Kein Umsetzungsrahmen, da FDP nicht im Bundestag.</div>
+            <a class="card-source" href="https://web.de/magazine/politik/wahlen/bundestagswahl/bundestagswahl-2025-wahlprogramm-fdp-uebersicht-40484454" target="_blank">
+              🔗 Quelle: web.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Heizungsgesetz abschaffen</div>
+            <div class="promise-text">Wahlprogramm 2025: Das Heizungsgesetz soll abgeschafft bzw. „auslaufen" gelassen werden. „Heizen mit Holz bleibt mit uns weiter möglich."</div>
+            <div class="promise-result promised">📋 Forderung: Kein Umsetzungsrahmen.</div>
+            <a class="card-source" href="https://web.de/magazine/politik/wahlen/bundestagswahl/bundestagswahl-2025-wahlprogramm-fdp-uebersicht-40484454" target="_blank">
+              🔗 Quelle: web.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Staat</div>
+            <div class="promise-title">Ministerien zusammenlegen, Digitalministerium</div>
+            <div class="promise-text">Kurzwahlprogramm 2025: Zusammenlegung von Ministerien zur Verschlankung der Behördenlandschaft, eigenes Digitalministerium.</div>
+            <div class="promise-result promised">📋 Forderung: Kein Umsetzungsrahmen.</div>
+            <a class="card-source" href="https://www.fdp.de/kurzwahlprogramm-btw25" target="_blank">
+              🔗 Quelle: fdp.de/kurzwahlprogramm-btw25
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Bildung</div>
+            <div class="promise-title">„Lebenschancen-BAföG" für lebenslanges Lernen</div>
+            <div class="promise-text">Wahlprogramm 2025: Neues „Lebenschancen-BAföG" zur Finanzierung von Kursgebühren, Bildungsauszeiten und Kinderbetreuung; elternunabhängiges BAföG-Baukastensystem.</div>
+            <div class="promise-result promised">📋 Forderung: Kein Umsetzungsrahmen.</div>
+            <a class="card-source" href="https://www.fdp.de/das-wahlprogramm-der-freien-demokraten-zur-bundestagswahl-2025" target="_blank">
+              🔗 Quelle: fdp.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Soziales</div>
+            <div class="promise-title">Bürgergeld-Regelsatz absenken</div>
+            <div class="promise-text">Wahlprogramm 2025: Abschaffung der Besitzstandsregelung, um den Bürgergeld-Regelsatz abzusenken und Arbeitsanreize zu stärken.</div>
+            <div class="promise-result promised">📋 Forderung: Kein Umsetzungsrahmen.</div>
+            <a class="card-source" href="https://www.fdp.de/das-wahlprogramm-der-freien-demokraten-zur-bundestagswahl-2025" target="_blank">
+              🔗 Quelle: fdp.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- AFD PANEL -->
+    <div class="party-panel" id="panel-afd" style="--party-color:#009EE0">
+      <div class="party-header" style="border-left-color:#009EE0">
+        <div class="party-header-top">
+          <div>
+            <div class="party-full-name">Alternative für Deutschland</div>
+            <div class="party-tagline">„Deutschland. Aber normal." — Wahlprogramm 2025</div>
+            <a class="source-link" href="https://www.afd.de/wahlprogramm/" target="_blank">🔗 afd.de/wahlprogramm</a>
+          </div>
+          <div class="party-stats">
+            <div class="stat"><span class="stat-num done">0</span><span class="stat-label">Umgesetzt</span></div>
+            <div class="stat"><span class="stat-num progress">0</span><span class="stat-label">In Arbeit</span></div>
+            <div class="stat"><span class="stat-num failed">0</span><span class="stat-label">Gescheitert</span></div>
+            <div class="stat"><span class="stat-num promised">15</span><span class="stat-label">Forderungen</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer" style="margin-bottom:16px">
+        Die AfD war und ist in keiner Bundesregierung beteiligt. Eine Bewertung „Umgesetzt / Nicht umgesetzt" ist daher nicht möglich. Aufgelistet sind Kernforderungen aus dem offiziellen Wahlprogramm 2025 sowie dem 20-Punkte-Kernforderungsflugblatt.
+      </div>
+
+      <div class="section-title">Forderungen aus dem Wahlprogramm 2025</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Migration</div>
+            <div class="promise-title">„Remigration" — Rückführung abgelehnter Asylbewerber</div>
+            <div class="promise-text">Wahlprogramm 2025: Konsequente Rückführung aller nicht bleibeberechtigten und ausreisepflichtigen Personen; Abschaffung bestehender Bleiberechtsregelungen.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition. Die AfD hat keine Regierungsverantwortung auf Bundesebene.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-afd" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de — Programmanalyse
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Rückkehr zur Kernenergie und Kohle</div>
+            <div class="promise-text">Wahlprogramm 2025: Wiederinbetriebnahme bestehender Kernkraftwerke, Bau neuer Reaktoren der neuesten Generation, Verlängerung der Laufzeiten von Kohlekraftwerken.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition. Kein Umsetzungsrahmen auf Bundesebene.</div>
+            <a class="card-source" href="https://www.campact.de/blog/2025/01/wahlprogramm-bundestagswahl-das-plant-die-afd/" target="_blank">
+              🔗 Quelle: campact.de — Programmanalyse
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Russische Gaslieferungen wieder aufnehmen</div>
+            <div class="promise-text">Wahlprogramm 2025: Wiederaufnahme russischer Gaslieferungen, Abschaffung der CO₂-Abgabe, Abbau von Windparks.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.campact.de/blog/2025/01/wahlprogramm-bundestagswahl-das-plant-die-afd/" target="_blank">
+              🔗 Quelle: campact.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Steuern</div>
+            <div class="promise-title">Einheitlicher Ertragssteuersatz von 22 % für Unternehmen</div>
+            <div class="promise-text">Wahlprogramm 2025: Einführung eines einheitlichen Ertragssteuersatzes von 22 % mit kommunaler Zuschlagsoption, Senkung der Unternehmenssteuerlast.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.smartsteuer.de/blog/2025/01/30/die-steuerplaene-der-afd-zur-bundestagswahl-2025/" target="_blank">
+              🔗 Quelle: smartsteuer.de — Programmanalyse
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Steuern</div>
+            <div class="promise-title">Erbschaftsteuer und Vermögensteuer abschaffen</div>
+            <div class="promise-text">Wahlprogramm 2025: Vollständige Abschaffung der Erbschaftsteuer, kategorische Ablehnung einer Vermögensteuer.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.smartsteuer.de/blog/2025/01/30/die-steuerplaene-der-afd-zur-bundestagswahl-2025/" target="_blank">
+              🔗 Quelle: smartsteuer.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Rente</div>
+            <div class="promise-title">Politiker und Beamte in Rentenversicherung einbeziehen</div>
+            <div class="promise-text">Wahlprogramm 2025: Künftige Verbeamtung nur noch für Hoheitsaufgaben, sodass die große Mehrheit der Staatsbediensteten in die gesetzliche Rentenversicherung einzahlt — Politiker als Pflichtmitglieder.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.dia-vorsorge.de/afd-will-mehr-steuern-fuer-die-rente-einsetzen/" target="_blank">
+              🔗 Quelle: dia-vorsorge.de — Programmanalyse
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Rente</div>
+            <div class="promise-title">Abschlagsfreie Rente nach 45 Beitragsjahren</div>
+            <div class="promise-text">Wahlprogramm 2025: Nach 45 beitragsberechtigten Arbeitsjahren soll ein abschlagsfreier Renteneintritt möglich sein, zusätzlicher Steuerfreibetrag von 12.000 € für erwerbstätige Rentner.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.dia-vorsorge.de/afd-will-mehr-steuern-fuer-die-rente-einsetzen/" target="_blank">
+              🔗 Quelle: dia-vorsorge.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Familie</div>
+            <div class="promise-title">Willkommensprämie 20.000 € für Neugeborene</div>
+            <div class="promise-text">Wahlprogramm 2025: Eine „Willkommensprämie" von 20.000 € pro Neugeborenem, sofern bereits entsprechende Rentenbeiträge eingezahlt wurden — sonst als Gutschrift für künftige Beiträge.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-afd" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Familie</div>
+            <div class="promise-title">Erziehungsgeld für häusliche Kinderbetreuung</div>
+            <div class="promise-text">Wahlprogramm 2025: Erziehungsgeld in Höhe des Durchschnitts-Nettolohns für Eltern, die ihre Kinder in den ersten drei Lebensjahren selbst betreuen; „Ehe-Start-Kredit" für junge Paare.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-afd" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wohnen</div>
+            <div class="promise-title">Grunderwerbsteuer für Selbstnutzer abschaffen</div>
+            <div class="promise-text">Kernforderungen 2025 (Punkt 10): Abschaffung der Grunderwerbsteuer für Selbstnutzer und Vereinfachung des Baurechts zur Förderung von Wohneigentum.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.afd.de/wp-content/uploads/2025/01/2025-01-23-_-AfD-Flugblatt-_-20-Kernforderungen-aus-Bundestagswahlprogramm-_-Webversion.pdf" target="_blank">
+              🔗 Quelle: afd.de — 20 Kernforderungen (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Demokratie</div>
+            <div class="promise-title">Direkte Demokratie nach Schweizer Vorbild</div>
+            <div class="promise-text">Kernforderungen 2025 (Punkt 11): Bundesweite Volksabstimmungen über zentrale Gesetzesänderungen, Grundgesetzänderungen und völkerrechtliche Verträge, plus Bürger-Initiativrecht.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.afd.de/wp-content/uploads/2025/01/2025-01-23-_-AfD-Flugblatt-_-20-Kernforderungen-aus-Bundestagswahlprogramm-_-Webversion.pdf" target="_blank">
+              🔗 Quelle: afd.de — 20 Kernforderungen (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">EU</div>
+            <div class="promise-title">Austritt aus der EU oder fundamentale Reform</div>
+            <div class="promise-text">Wahlprogramm 2025 (S. 78): „Wir fordern eine grundlegende Reform der EU — oder einen geordneten Austritt Deutschlands (Dexit)."</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.afd.de/wp-content/uploads/2025/02/AfD_Bundestagswahlprogramm2025_web.pdf" target="_blank">
+              🔗 Quelle: afd.de — Wahlprogramm 2025 (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Gesundheit</div>
+            <div class="promise-title">Widerspruchsregelung bei Organspende ablehnen</div>
+            <div class="promise-text">Wahlprogramm 2025: Ablehnung jeder Form der automatischen „Widerspruchsregelung" bei der Organspende; Entscheidung müsse beim Betroffenen verbleiben.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.afd.de/wp-content/uploads/2025/02/AfD_Bundestagswahlprogramm2025_web.pdf" target="_blank">
+              🔗 Quelle: afd.de — Wahlprogramm 2025 (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Klima</div>
+            <div class="promise-title">Austritt aus dem Pariser Klimaabkommen</div>
+            <div class="promise-text">Wahlprogramm 2025 (S. 40): Das Pariser Klimaschutzabkommen habe Deutschland einseitig benachteiligt — Austritt gefordert.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.afd.de/wp-content/uploads/2025/02/AfD_Bundestagswahlprogramm2025_web.pdf" target="_blank">
+              🔗 Quelle: afd.de — Wahlprogramm 2025 (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Migration</div>
+            <div class="promise-title">Zehn Jahre sozialversicherungspflichtige Beschäftigung für Bürgergeld</div>
+            <div class="promise-text">Wahlprogramm 2025: Ausländische Bürger sollen Bürgergeld nur erhalten, wenn sie zuvor zehn Jahre sozialversicherungspflichtig beschäftigt waren.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.campact.de/blog/2025/01/wahlprogramm-bundestagswahl-das-plant-die-afd/" target="_blank">
+              🔗 Quelle: campact.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BSW PANEL -->
+    <div class="party-panel" id="panel-bsw" style="--party-color:#7B2D8B">
+      <div class="party-header" style="border-left-color:#7B2D8B">
+        <div class="party-header-top">
+          <div>
+            <div class="party-full-name">Bündnis Sahra Wagenknecht</div>
+            <div class="party-tagline">„Vernunft und Gerechtigkeit" — Wahlprogramm 2025</div>
+            <a class="source-link" href="https://www.bsw-vg.de/programm/" target="_blank">🔗 bsw-vg.de/programm</a>
+          </div>
+          <div class="party-stats">
+            <div class="stat"><span class="stat-num done">0</span><span class="stat-label">Umgesetzt</span></div>
+            <div class="stat"><span class="stat-num progress">0</span><span class="stat-label">In Arbeit</span></div>
+            <div class="stat"><span class="stat-num failed">1</span><span class="stat-label">Verfehlt</span></div>
+            <div class="stat"><span class="stat-num promised">13</span><span class="stat-label">Forderungen</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer" style="margin-bottom:16px">
+        Das BSW wurde 2024 gegründet und ist bei der Bundestagswahl 2025 mit 4,97 % knapp an der 5%-Hürde gescheitert. Es ist nicht im Bundestag vertreten. Die Partei hat keine Bundesregierungsverantwortung.
+      </div>
+
+      <div class="section-title">Wahlergebnis</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="failed">
+          <div>
+            <div class="promise-topic">Wahlergebnis</div>
+            <div class="promise-title">Einzug in den Bundestag</div>
+            <div class="promise-text">Ziel des BSW zur Bundestagswahl 2025: Erstmaliger Einzug in den Bundestag als neu gegründete Partei.</div>
+            <div class="promise-result failed">❌ Knapp verfehlt: Das BSW erreichte 4,97 % der Stimmen — knapp unterhalb der 5%-Hürde. Kein Sitz im 21. Bundestag.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-bsw" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-failed">❌ Knapp verfehlt</span>
+        </div>
+
+      </div>
+
+      <div class="section-title">Kernforderungen Wahlprogramm 2025 „Unser Land verdient mehr"</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Außenpolitik</div>
+            <div class="promise-title">Waffenstillstand in der Ukraine — diplomatische Lösung</div>
+            <div class="promise-text">Wahlprogramm 2025: Einsatz für einen sofortigen Waffenstillstand und Friedensverhandlungen in der Ukraine.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://bsw-vg.de/wp-content/themes/bsw/assets/downloads/BSW%20Wahlprogramm%202025.pdf" target="_blank">
+              🔗 Quelle: bsw-vg.de — Wahlprogramm 2025 (PDF)
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Günstige Energie u.a. durch Gas aus Russland</div>
+            <div class="promise-text">Wahlprogramm 2025: Wirtschaftlichen Aufschwung durch niedrige Energiepreise erreichen, u.a. durch Gas aus Russland.</div>
+            <div class="promise-result promised">📋 Forderung. Kein politischer Umsetzungsrahmen.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-bsw" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Soziales</div>
+            <div class="promise-title">Mindestlohn auf 15 € erhöhen</div>
+            <div class="promise-text">Wahlprogramm 2025: Mindestlohn auf 15 €, deutlich verbesserte Renten und angepasste Kinderfreibeträge für eine gerechtere Wohlstandsverteilung.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.bsw-wahlprogramm-kurzfassung-sahra-wagenknecht-2025-mhsd.28220584-af82-4e16-b151-538338d3eff4.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Soziales</div>
+            <div class="promise-title">Bürgergeld durch leistungsorientierte Arbeitslosenversicherung ersetzen</div>
+            <div class="promise-text">Wahlprogramm 2025: Ersatz des Bürgergelds durch eine „leistungsorientierte Arbeitslosenversicherung".</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.bsw-wahlprogramm-kurzfassung-sahra-wagenknecht-2025-mhsd.28220584-af82-4e16-b151-538338d3eff4.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Gesundheit</div>
+            <div class="promise-title">Bürgerkrankenversicherung für alle</div>
+            <div class="promise-text">Wahlprogramm 2025: Einführung einer Bürgerkrankenversicherung, die alle Bürger umfasst; Stopp der Privatisierung von Krankenhäusern, regulierte Arzneimittelpreise.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.bsw-wahlprogramm-kurzfassung-sahra-wagenknecht-2025-mhsd.28220584-af82-4e16-b151-538338d3eff4.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Rente</div>
+            <div class="promise-title">Rentensystem nach österreichischem Vorbild reformieren</div>
+            <div class="promise-text">Wahlprogramm 2025: Reform der gesetzlichen Rente nach dem Vorbild Österreichs, mit höherer Beitragsbasis durch Einbeziehung weiterer Berufsgruppen.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.bsw-wahlprogramm-kurzfassung-sahra-wagenknecht-2025-mhsd.28220584-af82-4e16-b151-538338d3eff4.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">„Infrastruktur-Garantie" für Gesundheit, Wohnen, Energie</div>
+            <div class="promise-text">Wahlprogramm 2025: Gemeinwohlorientierte Organisation von Gesundheit, Wohnen, Energie- und Wasserversorgung; staatliche Gewährleistungspflicht u.a. für ÖPNV und schnelles Internet.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-bsw" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">Aktienrückkäufe besteuern</div>
+            <div class="promise-text">Wahlprogramm 2025: Besteuerung von Aktienrückkäufen, um Unternehmen zu Reinvestitionen statt Dividendenausschüttungen zu bewegen.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-bsw" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Migration</div>
+            <div class="promise-title">Unkontrollierte Zuwanderung beenden</div>
+            <div class="promise-text">Wahlprogramm 2025: Strengere Regulation bei Migrations- und Asylpolitik, Ende unkontrollierter Zuwanderung.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.bsw-wahlprogramm-kurzfassung-sahra-wagenknecht-2025-mhsd.28220584-af82-4e16-b151-538338d3eff4.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Bildung</div>
+            <div class="promise-title">Bundesweit einheitliche Lehrpläne</div>
+            <div class="promise-text">Wahlprogramm 2025: Grundlegende Reform des Bildungssystems durch bundesweit einheitliche Lehrpläne und praxisorientierte Lehrerbildung.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.bsw-wahlprogramm-kurzfassung-sahra-wagenknecht-2025-mhsd.28220584-af82-4e16-b151-538338d3eff4.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Digitales</div>
+            <div class="promise-title">Open-Source-Software und KI-Modelle fördern</div>
+            <div class="promise-text">Wahlprogramm 2025: Staatliche Förderung von Open-Source-Software und Open-Source-KI-Modellen für Wissenschaft, Bildung und Verwaltung.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.bundestagswahl-bw.de/wahlprogramm-bsw" target="_blank">
+              🔗 Quelle: bundestagswahl-bw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Innere Sicherheit</div>
+            <div class="promise-title">Besser ausgestattete Polizei, Maßnahmen gegen Clan-Kriminalität</div>
+            <div class="promise-text">Wahlprogramm 2025: Stärkere Polizeiausstattung, klare Abschieberegeln, Maßnahmen gegen Clan-Kriminalität bei gleichzeitiger Stärkung der Meinungsfreiheit.</div>
+            <div class="promise-result promised">📋 Forderung. BSW nicht im Bundestag.</div>
+            <a class="card-source" href="https://www.stuttgarter-zeitung.de/inhalt.bsw-wahlprogramm-kurzfassung-sahra-wagenknecht-2025-mhsd.28220584-af82-4e16-b151-538338d3eff4.html" target="_blank">
+              🔗 Quelle: stuttgarter-zeitung.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LINKE PANEL -->
+    <div class="party-panel" id="panel-linke" style="--party-color:#BE3075">
+      <div class="party-header" style="border-left-color:#BE3075">
+        <div class="party-header-top">
+          <div>
+            <div class="party-full-name">Die Linke</div>
+            <div class="party-tagline">„Für alle. Nicht für wenige." — Wahlprogramm 2025</div>
+            <a class="source-link" href="https://www.die-linke.de/themen/" target="_blank">🔗 die-linke.de/themen</a>
+          </div>
+          <div class="party-stats">
+            <div class="stat"><span class="stat-num done">0</span><span class="stat-label">Umgesetzt</span></div>
+            <div class="stat"><span class="stat-num progress">0</span><span class="stat-label">In Arbeit</span></div>
+            <div class="stat"><span class="stat-num failed">0</span><span class="stat-label">Gescheitert</span></div>
+            <div class="stat"><span class="stat-num promised">12</span><span class="stat-label">Forderungen</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer" style="margin-bottom:16px">
+        Die Linke ist bei der Bundestagswahl 2025 mit 8,8 % eingezogen (drei Direktmandate sicherten den Einzug zusätzlich ab). Sie hat keine Bundesregierungsverantwortung und ist in der Opposition.
+      </div>
+
+      <div class="section-title">Kernforderungen Wahlprogramm 2025 „Alle wollen Regieren. Wir wollen verändern."</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Soziales</div>
+            <div class="promise-title">Solidarische Mindestrente von 1.200 € netto</div>
+            <div class="promise-text">Wahlprogramm 2025: Mindestrente von mindestens 1.200 € netto für alle.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.die-linke.de/bundestagswahl-2025/wahlprogramm/" target="_blank">
+              🔗 Quelle: die-linke.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Finanzen</div>
+            <div class="promise-title">Millionärssteuer und Vermögensabgabe</div>
+            <div class="promise-text">Wahlprogramm 2025: Einmalige Vermögensabgabe auf Vermögen über 1 Million Euro sowie eine dauerhafte Vermögensteuer.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.die-linke.de/bundestagswahl-2025/wahlprogramm/" target="_blank">
+              🔗 Quelle: die-linke.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wohnen</div>
+            <div class="promise-title">Mietenstopp und 1 Million neue Sozialwohnungen</div>
+            <div class="promise-text">Wahlprogramm 2025: Bundesweiter Mietenstopp und Bau von einer Million Sozialwohnungen, 20 Mrd. € jährlich für gemeinnützigen Wohnraum.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.deutschland.de/de/topic/politik/bundestagswahl-2025-wahlprogramme-parteien-wahlkampf" target="_blank">
+              🔗 Quelle: deutschland.de — Programmvergleich
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Klimaschutz</div>
+            <div class="promise-title">Soziales Klimageld von 320 € jährlich</div>
+            <div class="promise-text">Wahlprogramm 2025: Rückwirkend zum 1. Januar 2025 ein soziales Klimageld von 320 € jährlich pro Person als Direktzahlung, finanziert aus CO2-Einnahmen.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.die-linke.de/bundestagswahl-2025/wahlprogramm/" target="_blank">
+              🔗 Quelle: die-linke.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Energie</div>
+            <div class="promise-title">Strom- und Gassperren gesetzlich verbieten</div>
+            <div class="promise-text">Wahlprogramm 2025: Gesetzliches Verbot von Strom- und Gassperren, Reform des Strommarkts mit schnell wirkenden Preiskontrollen.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.die-linke.de/bundestagswahl-2025/wahlprogramm/" target="_blank">
+              🔗 Quelle: die-linke.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Mindestlohn</div>
+            <div class="promise-title">Mindestlohn auf 15 € erhöhen</div>
+            <div class="promise-text">Wahlprogramm 2025: Erhöhung des Mindestlohns auf 15 €, im Einklang mit Grünen, SPD und BSW-Forderungen.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.deutschland.de/de/topic/politik/bundestagswahl-2025-wahlprogramme-parteien-wahlkampf" target="_blank">
+              🔗 Quelle: deutschland.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Steuern</div>
+            <div class="promise-title">Mehrwertsteuer auf Grundnahrungsmittel auf null senken</div>
+            <div class="promise-text">Wahlprogramm 2025: Senkung der Mehrwertsteuer auf Grundnahrungsmittel auf null Prozent.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.deutschland.de/de/topic/politik/bundestagswahl-2025-wahlprogramme-parteien-wahlkampf" target="_blank">
+              🔗 Quelle: deutschland.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Haushalt</div>
+            <div class="promise-title">Schuldenbremse abschaffen</div>
+            <div class="promise-text">Wahlprogramm 2025: Vollständige Abschaffung der im Grundgesetz verankerten Schuldenbremse, um Investitionsspielräume zu schaffen.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.deutschland.de/de/topic/politik/bundestagswahl-2025-wahlprogramme-parteien-wahlkampf" target="_blank">
+              🔗 Quelle: deutschland.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Arbeit</div>
+            <div class="promise-title">Vier-Tage-Woche bei vollem Lohnausgleich</div>
+            <div class="promise-text">Wahlprogramm 2025: Einsatz für eine Vier-Tage-Woche bei vollem Lohnausgleich und mehr Mitspracherecht für Arbeitnehmer.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.hessenschau.de/politik/bundestagswahl/bundestagswahl-2025-das-fordern-parteien-zur-wirtschaft-v1,btw25-wirtschaft-konjunktur-100.html" target="_blank">
+              🔗 Quelle: hessenschau.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Wirtschaft</div>
+            <div class="promise-title">Energie und Finanzen in öffentlicher Hand</div>
+            <div class="promise-text">Wahlprogramm 2025: Wichtige Bereiche wie Energie und Finanzen sollen in öffentlicher Hand oder gemeinschaftlichem Besitz liegen.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.hessenschau.de/politik/bundestagswahl/bundestagswahl-2025-das-fordern-parteien-zur-wirtschaft-v1,btw25-wirtschaft-konjunktur-100.html" target="_blank">
+              🔗 Quelle: hessenschau.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Migration</div>
+            <div class="promise-title">Recht auf Asyl und friedliche Außenpolitik</div>
+            <div class="promise-text">Wahlprogramm 2025: Die Linke steht für das Recht auf Asyl und eine friedliche, diplomatische Außenpolitik.</div>
+            <div class="promise-result promised">📋 Forderung in Opposition.</div>
+            <a class="card-source" href="https://www.politische-bildung-brandenburg.de/themen/wofuer-stehen-die-parteien" target="_blank">
+              🔗 Quelle: politische-bildung-brandenburg.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SSW PANEL -->
+    <div class="party-panel" id="panel-ssw" style="--party-color:#003C8F">
+      <div class="party-header" style="border-left-color:#003C8F">
+        <div class="party-header-top">
+          <div>
+            <div class="party-full-name">Südschleswigscher Wählerverband</div>
+            <div class="party-tagline">Partei der dänischen und friesischen Minderheit — seit 1948</div>
+            <a class="source-link" href="https://www.ssw.de/politik/positionen/" target="_blank">🔗 ssw.de/politik/positionen</a>
+          </div>
+          <div class="party-stats">
+            <div class="stat"><span class="stat-num done">0</span><span class="stat-label">Umgesetzt</span></div>
+            <div class="stat"><span class="stat-num progress">0</span><span class="stat-label">In Arbeit</span></div>
+            <div class="stat"><span class="stat-num failed">0</span><span class="stat-label">Gescheitert</span></div>
+            <div class="stat"><span class="stat-num promised">3</span><span class="stat-label">Forderungen</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="disclaimer" style="margin-bottom:16px">
+        Der SSW ist als Partei einer nationalen Minderheit von der 5%-Hürde befreit. Er ist mit einem Abgeordneten (Stefan Seidler) im Bundestag vertreten. Keine Regierungsbeteiligung auf Bundesebene.
+      </div>
+
+      <div class="section-title">Kernpositionen</div>
+      <div class="cards-grid">
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Minderheitenrechte</div>
+            <div class="promise-title">Stärkung nationaler Minderheiten im Grundgesetz</div>
+            <div class="promise-text">SSW-Programm: „Wir fordern den Schutz nationaler Minderheiten im Grundgesetz zu verankern."</div>
+            <div class="promise-result promised">📋 Forderung. Stefan Seidler brachte entsprechende Anträge im Bundestag ein (20. Wahlperiode).</div>
+            <a class="card-source" href="https://www.ssw.de/politik/positionen/minderheiten/" target="_blank">
+              🔗 Quelle: ssw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+        <div class="promise-card" data-status="promised">
+          <div>
+            <div class="promise-topic">Grenzregion</div>
+            <div class="promise-title">Deutsch-dänische Grenzregion als Modellregion für Europa</div>
+            <div class="promise-text">SSW-Programm: „Die Grenzregion zwischen Deutschland und Dänemark soll als Modell für gelebte Mehrsprachigkeit und Minderheitenschutz in Europa dienen."</div>
+            <div class="promise-result promised">📋 Forderung in laufender Arbeit im Bundestag.</div>
+            <a class="card-source" href="https://www.ssw.de/politik/positionen/" target="_blank">
+              🔗 Quelle: ssw.de
+            </a>
+          </div>
+          <span class="status-badge badge-promised">📋 Forderung</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONTRIBUTE BOX -->
+    <div class="contribute-box">
+      <h3>Fehler gefunden? Quelle ergänzen?</h3>
+      <p>Diese Seite lebt von Genauigkeit. Jeder Eintrag muss durch einen direkten Link auf eine offizielle Parteiwebseite oder bundestag.de belegt sein. Vermutungen, Medienberichte oder Sekundärquellen werden nicht akzeptiert.</p>
+    </div>
+
+  </div><!-- end content-area -->
+</div><!-- end main -->
+
+<script>
+  function showParty(partyId, btn) {
+    document.querySelectorAll('.party-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.party-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + partyId).classList.add('active');
+    btn.classList.add('active');
+    filterStatus(currentFilter, document.querySelector('.filter-btn.active'));
+  }
+
+  let currentFilter = 'all';
+
+  function filterStatus(status, btn) {
+    currentFilter = status;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    const activePanel = document.querySelector('.party-panel.active');
+    if (!activePanel) return;
+
+    activePanel.querySelectorAll('.promise-card').forEach(card => {
+      if (status === 'all' || card.dataset.status === status) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
