@@ -1975,8 +1975,20 @@
 (function () {
   const PARTIES = ['spd', 'cdu', 'gruene', 'fdp', 'afd', 'bsw', 'linke', 'ssw'];
   const STATUSES = ['done', 'progress', 'failed', 'promised'];
+  // Zusatzhinweis für Karten, die nur ein Versprechen ohne dokumentiertes Ergebnis zeigen
+  const PROMISED_NOTES = {
+    spd:    '📌 Aktueller Stand: Bisher nur versprochen — noch keine Umsetzung im Bundestag dokumentiert. Als Regierungspartei kann die SPD das Vorhaben noch umsetzen.',
+    cdu:    '📌 Aktueller Stand: Bisher nur versprochen — noch keine Umsetzung im Bundestag dokumentiert. Als Regierungspartei kann die CDU/CSU das Vorhaben noch umsetzen.',
+    gruene: '📌 Aktueller Stand: Reine Forderung — die Grünen sind in der Opposition und können sie ohne Mehrheit derzeit nicht umsetzen. Das Vorhaben liegt auf der Seitenlinie.',
+    afd:    '📌 Aktueller Stand: Reine Forderung — die AfD ist in der Opposition und kann sie ohne Mehrheit derzeit nicht umsetzen. Das Vorhaben liegt auf der Seitenlinie.',
+    linke:  '📌 Aktueller Stand: Reine Forderung — Die Linke ist in der Opposition und kann sie ohne Mehrheit derzeit nicht umsetzen. Das Vorhaben liegt auf der Seitenlinie.',
+    ssw:    '📌 Aktueller Stand: Reine Forderung — der SSW hat einen Sitz und keine Regierungsbeteiligung; eine Umsetzung ist derzeit nicht möglich.',
+    fdp:    '📌 Aktueller Stand: Reine Forderung — die FDP ist seit Februar 2025 nicht im Bundestag vertreten; eine Umsetzung ist derzeit nicht möglich.',
+    bsw:    '📌 Aktueller Stand: Reine Forderung — das BSW ist nicht im Bundestag vertreten; eine Umsetzung ist derzeit nicht möglich.'
+  };
   const nav = document.querySelector('.party-nav');
   const filterBar = document.querySelector('.filter-bar');
+  const contentArea = document.querySelector('.content-area');
   let currentFilter = 'all';
   let currentParty = 'spd';
 
@@ -1991,7 +2003,20 @@
     return c;
   }
 
-  // Statistikzahlen aus den echten Karten berechnen + Fortschrittsbalken einfügen
+  function totalCounts() {
+    const t = { all: 0, done: 0, progress: 0, failed: 0, promised: 0 };
+    PARTIES.forEach(id => {
+      const panel = document.getElementById('panel-' + id);
+      if (!panel) return;
+      const c = counts(panel);
+      STATUSES.forEach(s => { t[s] += c[s]; });
+      t.all += c.all;
+    });
+    return t;
+  }
+
+  // Statistikzahlen aus den echten Karten berechnen, Fortschrittsbalken und
+  // Status-Hinweise für reine Versprechen einfügen
   function initStats() {
     PARTIES.forEach(id => {
       const panel = document.getElementById('panel-' + id);
@@ -2015,13 +2040,26 @@
         });
         header.appendChild(track);
       }
+      panel.querySelectorAll('.promise-card[data-status="promised"]').forEach(card => {
+        if (card.querySelector('.promise-result')) return;
+        const note = document.createElement('div');
+        note.className = 'promise-result promised';
+        note.textContent = PROMISED_NOTES[id] || '';
+        const col = card.firstElementChild;
+        const src = col && col.querySelector('.card-source');
+        if (src) col.insertBefore(note, src); else if (col) col.appendChild(note);
+      });
     });
+    const hint = document.createElement('div');
+    hint.className = 'empty-state no-selection hidden';
+    hint.textContent = 'Keine Partei ausgewählt — wähle oben eine Partei, um ihre Versprechen und deren Umsetzungsstand zu sehen.';
+    const firstPanel = contentArea.querySelector('.party-panel');
+    contentArea.insertBefore(hint, firstPanel);
   }
 
   function updateChipCounts() {
-    const panel = document.getElementById('panel-' + currentParty);
-    if (!panel) return;
-    const c = counts(panel);
+    const panel = currentParty ? document.getElementById('panel-' + currentParty) : null;
+    const c = panel ? counts(panel) : totalCounts();
     filterBar.querySelectorAll('.filter-chip').forEach(chip => {
       const badge = chip.querySelector('.chip-count');
       if (badge) badge.textContent = c[chip.dataset.filter] || 0;
@@ -2053,14 +2091,15 @@
     empty.classList.toggle('hidden', visible !== 0);
   }
 
+  // id = null bedeutet: keine Partei ausgewählt (Abwahl per erneutem Klick)
   function showParty(id, updateHash) {
-    if (!document.getElementById('panel-' + id)) id = 'spd';
+    if (id !== null && !document.getElementById('panel-' + id)) id = 'spd';
     currentParty = id;
     document.querySelectorAll('.party-panel').forEach(p => {
-      p.classList.toggle('active', p.id === 'panel-' + id);
+      p.classList.toggle('active', id !== null && p.id === 'panel-' + id);
     });
     nav.querySelectorAll('.party-tab').forEach(b => {
-      const on = b.dataset.party === id;
+      const on = id !== null && b.dataset.party === id;
       b.classList.toggle('active', on);
       if (on) {
         b.setAttribute('aria-current', 'true');
@@ -2069,31 +2108,40 @@
         b.removeAttribute('aria-current');
       }
     });
+    const hint = contentArea.querySelector('.no-selection');
+    if (hint) hint.classList.toggle('hidden', id !== null);
     if (updateHash) {
-      history.replaceState(null, '', '#' + id);
-      if (window.scrollY > 200) {
-        document.querySelector('.content-area').scrollIntoView({ block: 'start', behavior: smooth() });
+      history.replaceState(null, '', id !== null ? '#' + id : location.pathname);
+      if (id !== null && window.scrollY > 200) {
+        contentArea.scrollIntoView({ block: 'start', behavior: smooth() });
       }
     }
     updateChipCounts();
     applyFilter();
   }
 
+  function setFilter(filter) {
+    currentFilter = filter;
+    filterBar.querySelectorAll('.filter-chip').forEach(c => {
+      const on = c.dataset.filter === filter;
+      c.classList.toggle('active', on);
+      c.setAttribute('aria-pressed', on);
+    });
+    applyFilter();
+  }
+
   nav.addEventListener('click', e => {
     const btn = e.target.closest('[data-party]');
-    if (btn) showParty(btn.dataset.party, true);
+    if (!btn) return;
+    showParty(btn.dataset.party === currentParty ? null : btn.dataset.party, true);
   });
 
   filterBar.addEventListener('click', e => {
     const chip = e.target.closest('[data-filter]');
     if (!chip) return;
-    currentFilter = chip.dataset.filter;
-    filterBar.querySelectorAll('.filter-chip').forEach(c => {
-      const on = c === chip;
-      c.classList.toggle('active', on);
-      c.setAttribute('aria-pressed', on);
-    });
-    applyFilter();
+    // Erneuter Klick auf den aktiven Filter wählt ihn ab (zurück zu "Alle")
+    const f = chip.dataset.filter;
+    setFilter(chip.classList.contains('active') && f !== 'all' ? 'all' : f);
   });
 
   window.addEventListener('hashchange', () => showParty(location.hash.slice(1) || 'spd', false));
