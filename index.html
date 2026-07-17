@@ -6,7 +6,7 @@
 <title>Wahlversprechen & Realität — Deutsche Parteien im Check</title>
 <meta name="description" content="Parteiencheck: Was haben deutsche Parteien versprochen — und was wurde tatsächlich umgesetzt? Alle Einträge belegt mit offiziellen Quellen aus Wahlprogrammen und dem Deutschen Bundestag.">
 <meta name="theme-color" content="#FFFFFF">
-<meta property="og:title" content="Parteiencheck — Versprochen. Getrackt. Belegt.">
+<meta property="og:title" content="Parteiencheck — Welche Partei hält, was sie verspricht?">
 <meta property="og:description" content="Wahlversprechen deutscher Parteien und ihr Umsetzungsstand — belegt mit offiziellen Quellen.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.parteiencheck.org/">
@@ -87,25 +87,29 @@
     --pc-ink: var(--ink);
     --on-pc: #FFFFFF;
     scroll-snap-align: center;
+    flex-shrink: 0;
     display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    min-height: 44px;
-    border-radius: 999px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 9px 16px 8px;
+    min-height: 52px;
+    min-width: 96px;
+    border-radius: 9px;
     border: 1.5px solid var(--line);
     background: var(--bg);
     color: var(--ink);
     font-family: 'Inter', sans-serif;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1;
     cursor: pointer;
     white-space: nowrap;
     transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
-  .party-tab .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pc); flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
-  .tab-role { font-size: 11px; font-weight: 500; color: var(--ink-3); }
+  .tab-top { display: inline-flex; align-items: center; gap: 7px; }
+  .party-tab .dot { width: 10px; height: 10px; border-radius: 3px; background: var(--pc); flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
+  .tab-role { font-size: 10.5px; font-weight: 500; color: var(--ink-3); letter-spacing: 0.02em; }
   .party-tab:hover { border-color: var(--pc-ink); }
   .party-tab.active { background: var(--pc); border-color: var(--pc); color: var(--on-pc); }
   .party-tab.active .dot { background: var(--on-pc); box-shadow: none; }
@@ -356,8 +360,7 @@
     .main { padding: 16px 14px 48px; }
     .header-inner { padding: 22px 0 16px; }
     .header-sub { font-size: 13.5px; }
-    .tab-role { display: none; }
-    .party-tab { padding: 10px 14px; }
+    .party-tab { padding: 8px 12px 7px; min-height: 48px; min-width: 0; }
     .party-header-top { flex-direction: column; }
     .party-stats { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
     .stat { min-width: 0; padding: 10px 4px; }
@@ -375,7 +378,7 @@
 <header>
   <div class="header-inner">
     <div class="header-label">Politische Transparenz · Deutschland</div>
-    <h1>Versprochen. <span>Getrackt.</span> Belegt.</h1>
+    <h1>Welche Partei <span>hält</span>, was sie verspricht?</h1>
     <p class="header-sub">Was haben deutsche Parteien versprochen — und was wurde davon tatsächlich umgesetzt? Alle Einträge basieren ausschließlich auf offiziellen Quellen: Wahlprogramme der Parteien und Protokolle des Deutschen Bundestages.</p>
     <div class="source-note">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -388,14 +391,14 @@
 <div class="toolbar">
   <div class="toolbar-inner">
     <nav class="party-nav" aria-label="Partei auswählen">
-      <button class="party-tab active" data-party="spd" aria-current="true"><span class="dot"></span>SPD<span class="tab-role">Koalition</span></button>
-      <button class="party-tab" data-party="cdu"><span class="dot"></span>CDU/CSU<span class="tab-role">Koalition</span></button>
-      <button class="party-tab" data-party="gruene"><span class="dot"></span>Grüne<span class="tab-role">Opposition</span></button>
-      <button class="party-tab" data-party="fdp"><span class="dot"></span>FDP<span class="tab-role">Opposition</span></button>
-      <button class="party-tab" data-party="afd"><span class="dot"></span>AfD<span class="tab-role">Opposition</span></button>
-      <button class="party-tab" data-party="bsw"><span class="dot"></span>BSW<span class="tab-role">Opposition</span></button>
-      <button class="party-tab" data-party="linke"><span class="dot"></span>Die Linke<span class="tab-role">Opposition</span></button>
-      <button class="party-tab" data-party="ssw"><span class="dot"></span>SSW<span class="tab-role">1 Sitz</span></button>
+      <button class="party-tab active" data-party="spd" aria-current="true"><span class="tab-top"><span class="dot"></span>SPD</span><span class="tab-role">Koalition</span></button>
+      <button class="party-tab" data-party="cdu"><span class="tab-top"><span class="dot"></span>CDU/CSU</span><span class="tab-role">Koalition</span></button>
+      <button class="party-tab" data-party="gruene"><span class="tab-top"><span class="dot"></span>Grüne</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="fdp"><span class="tab-top"><span class="dot"></span>FDP</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="afd"><span class="tab-top"><span class="dot"></span>AfD</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="bsw"><span class="tab-top"><span class="dot"></span>BSW</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="linke"><span class="tab-top"><span class="dot"></span>Die Linke</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="ssw"><span class="tab-top"><span class="dot"></span>SSW</span><span class="tab-role">1 Sitz</span></button>
     </nav>
     <div class="filter-bar" role="group" aria-label="Nach Status filtern">
       <button class="filter-chip active" data-filter="all" aria-pressed="true">Alle <span class="chip-count">0</span></button>
