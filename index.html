@@ -4,230 +4,229 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wahlversprechen & Realität — Deutsche Parteien im Check</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<meta name="description" content="Parteiencheck: Was haben deutsche Parteien versprochen — und was wurde tatsächlich umgesetzt? Alle Einträge belegt mit offiziellen Quellen aus Wahlprogrammen und dem Deutschen Bundestag.">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:title" content="Parteiencheck — Welche Partei hält, was sie verspricht?">
+<meta property="og:description" content="Wahlversprechen deutscher Parteien und ihr Umsetzungsstand — belegt mit offiziellen Quellen.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.parteiencheck.org/">
+<meta property="og:locale" content="de_DE">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #F0F2F5;
-    --surface: #FFFFFF;
-    --text-primary: #0D0F1A;
-    --text-secondary: #5A5F7A;
-    --text-muted: #9EA4BE;
-    --border: #E2E5EF;
-    --shadow: 0 2px 12px rgba(0,0,0,0.07);
-    --radius: 10px;
+    /* Schwarz-Weiß-Basis */
+    --bg: #FFFFFF;
+    --tile: #F7F7F8;
+    --ink: #0A0A0A;
+    --ink-2: #4B4B52;
+    --ink-3: #84848D;
+    --line: #E6E6EA;
+    /* Ampel-Status (einzige Farb-Ausnahme neben Parteifarben) */
+    --st-done: #16A34A;
+    --st-progress: #D97706;
+    --st-failed: #DC2626;
+    --st-promised: #52525B;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-hover: 0 6px 24px rgba(0,0,0,0.08);
   }
+
+  html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     background: var(--bg);
-    color: var(--text-primary);
+    color: var(--ink);
     min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
   }
 
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
   /* HEADER */
-  header {
-    background: #0D0F1A;
-    color: white;
-    padding: 0 40px;
-  }
-  .header-inner {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 36px 0 28px;
-  }
+  header { padding: 0 24px; }
+  .header-inner { max-width: 1200px; margin: 0 auto; padding: 34px 0 22px; }
   .header-label {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #7C82A8;
+    color: var(--ink-3);
     margin-bottom: 10px;
   }
   h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(28px, 4vw, 46px);
+    font-size: clamp(28px, 4vw, 44px);
     font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin-bottom: 12px;
   }
-  h1 span { color: #6C8EF5; }
-  .header-sub {
-    font-size: 14px;
-    color: #9EA4BE;
-    max-width: 600px;
-    line-height: 1.7;
-  }
-  .source-note {
-    margin-top: 18px;
-    font-size: 12px;
-    color: #555A7A;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  h1 span { box-shadow: inset 0 -0.16em 0 var(--ink); }
+  .header-sub { font-size: 15px; color: var(--ink-2); max-width: 640px; line-height: 1.65; }
+  .source-note { margin-top: 14px; font-size: 12px; color: var(--ink-3); display: flex; align-items: center; gap: 6px; }
   .source-note svg { flex-shrink: 0; }
 
-  /* FILTER BAR */
-  .filter-bar {
-    background: #0D0F1A;
-    border-top: 1px solid #1E2035;
-    padding: 0 40px;
+  /* STICKY TOOLBAR: Partei-Tabs + Status-Filter */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    padding: 0 24px;
   }
-  .filter-inner {
-    max-width: 1300px;
-    margin: 0 auto;
-    display: flex;
-    gap: 4px;
-    padding: 12px 0;
-    overflow-x: auto;
-  }
-  .filter-btn {
-    background: transparent;
-    border: 1px solid #2A2D45;
-    color: #7C82A8;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
+  .toolbar-inner { max-width: 1200px; margin: 0 auto; padding: 10px 0 12px; display: flex; flex-direction: column; gap: 8px; }
+
+  .party-nav { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .party-nav::-webkit-scrollbar { display: none; }
+  .party-tab {
+    --pc: var(--ink);
+    --pc-ink: var(--ink);
+    --on-pc: #FFFFFF;
+    scroll-snap-align: center;
+    flex-shrink: 0;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 9px 16px 8px;
+    min-height: 52px;
+    min-width: 96px;
+    border-radius: 9px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
     cursor: pointer;
     white-space: nowrap;
-    transition: all 0.15s;
-    font-family: 'Inter', sans-serif;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
   }
-  .filter-btn:hover { border-color: #6C8EF5; color: #6C8EF5; }
-  .filter-btn.active { background: #6C8EF5; border-color: #6C8EF5; color: white; }
+  .tab-top { display: inline-flex; align-items: center; gap: 7px; }
+  .party-tab .dot { width: 10px; height: 10px; border-radius: 3px; background: var(--pc); flex-shrink: 0; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12); }
+  .tab-role { font-size: 10.5px; font-weight: 500; color: var(--ink-3); letter-spacing: 0.02em; }
+  .party-tab:hover { border-color: var(--pc-ink); }
+  .party-tab.active { background: var(--pc); border-color: var(--pc); color: var(--on-pc); }
+  .party-tab.active .dot { background: var(--on-pc); box-shadow: none; }
+  .party-tab.active .tab-role { color: var(--on-pc); opacity: 0.75; }
+
+  /* Parteifarben (Akzent + kontrastsichere Textvariante) */
+  .party-tab[data-party="spd"]    { --pc: #E3000F; --pc-ink: #E3000F; }
+  .party-tab[data-party="cdu"]    { --pc: #000000; --pc-ink: #000000; }
+  .party-tab[data-party="gruene"] { --pc: #1AA037; --pc-ink: #15803D; }
+  .party-tab[data-party="fdp"]    { --pc: #FFED00; --pc-ink: #8A7A00; --on-pc: #0A0A0A; }
+  .party-tab[data-party="afd"]    { --pc: #009EE0; --pc-ink: #0369A1; }
+  .party-tab[data-party="bsw"]    { --pc: #7B2D8B; --pc-ink: #7B2D8B; }
+  .party-tab[data-party="linke"]  { --pc: #BE3075; --pc-ink: #BE3075; }
+  .party-tab[data-party="ssw"]    { --pc: #003C8F; --pc-ink: #003C8F; }
+  #panel-fdp { --party-color: #FFED00; }
+
+  .filter-bar { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    min-height: 38px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--ink-2);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .filter-chip:hover { border-color: var(--ink); color: var(--ink); }
+  .filter-chip.active { background: var(--ink); border-color: var(--ink); color: #FFFFFF; }
+  .chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .chip-dot.done { background: var(--st-done); }
+  .chip-dot.progress { background: var(--st-progress); }
+  .chip-dot.failed { background: var(--st-failed); }
+  .chip-dot.promised { background: var(--st-promised); }
+  .chip-count { font-weight: 700; font-size: 11px; background: var(--tile); color: var(--ink-2); border-radius: 999px; padding: 2px 7px; }
+  .filter-chip.active .chip-count { background: rgba(255,255,255,0.18); color: #FFFFFF; }
 
   /* MAIN LAYOUT */
-  .main {
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 32px 40px 60px;
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: 24px;
-    align-items: start;
-  }
-
-  /* PARTY SIDEBAR */
-  .party-nav {
-    position: sticky;
-    top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .party-nav-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    padding: 0 12px 8px;
-  }
-  .party-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 1.5px solid transparent;
-    background: transparent;
-    text-align: left;
-    transition: all 0.15s;
-    font-family: 'Inter', sans-serif;
-  }
-  .party-btn:hover { background: var(--surface); }
-  .party-btn.active { background: var(--surface); border-color: var(--party-color); box-shadow: var(--shadow); }
-  .party-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .party-name-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-  }
-  .party-short {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-left: auto;
-    font-weight: 500;
-  }
-
-  /* CONTENT AREA */
-  .content-area { min-width: 0; }
+  .main { max-width: 1200px; margin: 0 auto; padding: 24px 24px 56px; }
+  .content-area { min-width: 0; scroll-margin-top: 130px; }
 
   .party-panel { display: none; }
   .party-panel.active { display: block; }
 
+  /* PARTEI-DASHBOARD-KOPF */
   .party-header {
-    background: var(--surface);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--party-color);
     border-radius: var(--radius);
-    padding: 24px 28px;
-    margin-bottom: 20px;
-    border-left: 4px solid var(--party-color);
+    padding: 20px 22px;
+    margin-bottom: 8px;
     box-shadow: var(--shadow);
   }
   .party-header-top {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 16px;
+    gap: 20px;
     flex-wrap: wrap;
   }
-  .party-full-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .party-tagline {
-    font-size: 13px;
-    color: var(--text-secondary);
-    font-style: italic;
-  }
-  .party-stats {
-    display: flex;
-    gap: 20px;
-  }
+  .party-full-name { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .party-tagline { font-size: 13px; color: var(--ink-2); }
+  .party-stats { display: flex; gap: 8px; flex-wrap: wrap; }
   .stat {
     text-align: center;
-    min-width: 60px;
+    min-width: 78px;
+    background: var(--tile);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 10px 8px;
   }
-  .stat-num {
-    font-size: 22px;
-    font-weight: 700;
-    display: block;
+  .stat-num { font-size: 24px; font-weight: 800; display: block; line-height: 1.15; }
+  .stat-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--ink-3); font-weight: 600; }
+  .stat-num.done { color: var(--st-done); }
+  .stat-num.progress { color: var(--st-progress); }
+  .stat-num.failed { color: var(--st-failed); }
+  .stat-num.promised { color: var(--ink); }
+
+  .progress-track {
+    display: flex;
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--tile);
+    margin-top: 16px;
   }
-  .stat-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-  }
-  .stat-num.done { color: #22C55E; }
-  .stat-num.progress { color: #F59E0B; }
-  .stat-num.failed { color: #EF4444; }
-  .stat-num.promised { color: #6C8EF5; }
+  .progress-track span { display: block; }
+  .seg-done { background: var(--st-done); }
+  .seg-progress { background: var(--st-progress); }
+  .seg-failed { background: var(--st-failed); }
+  .seg-promised { background: #D4D4D8; }
 
   .source-link {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-size: 11px;
-    color: var(--text-muted);
+    font-size: 12px;
+    color: var(--ink-2);
     text-decoration: none;
     margin-top: 10px;
-    padding: 4px 10px;
-    background: var(--bg);
-    border-radius: 4px;
-    transition: color 0.15s;
+    padding: 6px 10px;
+    background: var(--tile);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    transition: color 0.15s, border-color 0.15s;
   }
-  .source-link:hover { color: var(--text-primary); }
+  .source-link:hover { color: var(--ink); border-color: var(--ink-3); }
 
   /* PROMISE CARDS */
   .section-title {
@@ -235,43 +234,39 @@
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 12px;
+    color: var(--ink-3);
+    margin: 26px 0 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
   }
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  .section-title.hidden { display: none; }
 
-  .cards-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
+  .cards-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 8px; }
+  .cards-grid.hidden { display: none; }
+  @media (min-width: 1024px) {
+    .cards-grid { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); }
   }
 
   .promise-card {
-    background: var(--surface);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-left-width: 3px;
     border-radius: var(--radius);
-    padding: 18px 22px;
+    padding: 16px 18px;
     box-shadow: var(--shadow);
-    border: 1px solid var(--border);
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 12px;
     align-items: start;
     transition: box-shadow 0.15s;
   }
-  .promise-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-  .promise-card[data-status="done"] { border-left: 3px solid #22C55E; }
-  .promise-card[data-status="progress"] { border-left: 3px solid #F59E0B; }
-  .promise-card[data-status="failed"] { border-left: 3px solid #EF4444; }
-  .promise-card[data-status="promised"] { border-left: 3px solid #6C8EF5; }
+  .promise-card:hover { box-shadow: var(--shadow-hover); }
+  .promise-card[data-status="done"] { border-left-color: var(--st-done); }
+  .promise-card[data-status="progress"] { border-left-color: var(--st-progress); }
+  .promise-card[data-status="failed"] { border-left-color: var(--st-failed); }
+  .promise-card[data-status="promised"] { border-left-color: #A1A1AA; }
   .promise-card.hidden { display: none; }
 
   .promise-topic {
@@ -279,43 +274,33 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--text-muted);
+    color: var(--ink-3);
     margin-bottom: 5px;
   }
-  .promise-title {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    line-height: 1.4;
-  }
-  .promise-text {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 8px;
-  }
+  .promise-title { font-size: 14.5px; font-weight: 700; margin-bottom: 6px; line-height: 1.4; }
+  .promise-text { font-size: 13px; color: var(--ink-2); line-height: 1.6; margin-bottom: 8px; }
   .promise-result {
     font-size: 12px;
     line-height: 1.5;
     padding: 8px 10px;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     margin-top: 4px;
   }
   .promise-result.done { background: #F0FDF4; color: #166534; }
   .promise-result.progress { background: #FFFBEB; color: #92400E; }
   .promise-result.failed { background: #FEF2F2; color: #991B1B; }
-  .promise-result.promised { background: #EEF2FF; color: #3730A3; }
+  .promise-result.promised { background: var(--tile); color: var(--ink-2); }
 
   .card-source {
     font-size: 11px;
-    color: var(--text-muted);
+    color: var(--ink-3);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 4px;
     margin-top: 6px;
   }
-  .card-source:hover { color: var(--text-primary); }
+  .card-source:hover { color: var(--ink); }
 
   .status-badge {
     display: inline-flex;
@@ -331,37 +316,60 @@
   .badge-done { background: #DCFCE7; color: #15803D; }
   .badge-progress { background: #FEF9C3; color: #A16207; }
   .badge-failed { background: #FEE2E2; color: #B91C1C; }
-  .badge-promised { background: #E0E7FF; color: #4338CA; }
+  .badge-promised { background: #E4E4E7; color: #3F3F46; }
+
+  .empty-state {
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-top: 16px;
+    text-align: center;
+    color: var(--ink-3);
+    font-size: 13px;
+  }
+  .empty-state.hidden { display: none; }
 
   /* DISCLAIMER */
   .disclaimer {
-    background: #FFFBEB;
-    border: 1px solid #FDE68A;
+    background: var(--tile);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
-    padding: 16px 20px;
-    font-size: 12px;
-    color: #78350F;
+    padding: 14px 18px;
+    font-size: 12.5px;
+    color: var(--ink-2);
     line-height: 1.6;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
-  .disclaimer strong { font-weight: 600; }
+  .disclaimer strong { font-weight: 600; color: var(--ink); }
+  .disclaimer a { color: var(--ink); }
 
-  /* CONTRIBUTE */
-  .contribute-box {
-    background: #0D0F1A;
-    border-radius: var(--radius);
-    padding: 24px 28px;
-    color: white;
-    margin-top: 8px;
+  /* FOOTER */
+  footer { border-top: 1px solid var(--line); background: var(--tile); padding: 30px 24px 40px; margin-top: 32px; }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  footer h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  footer p { font-size: 13px; color: var(--ink-2); line-height: 1.65; max-width: 720px; }
+  .footer-note { margin-top: 14px; font-size: 12px; color: var(--ink-3); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; }
   }
-  .contribute-box h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 8px; }
-  .contribute-box p { font-size: 13px; color: #7C82A8; line-height: 1.6; }
 
   @media (max-width: 768px) {
-    .main { grid-template-columns: 1fr; padding: 16px; }
-    .party-nav { flex-direction: row; overflow-x: auto; position: static; flex-wrap: wrap; }
-    header, .filter-bar { padding: 0 16px; }
-    .header-inner { padding: 24px 0 20px; }
+    header, .toolbar { padding: 0 14px; }
+    .main { padding: 16px 14px 48px; }
+    .header-inner { padding: 22px 0 16px; }
+    .header-sub { font-size: 13.5px; }
+    .party-tab { padding: 8px 12px 7px; min-height: 48px; min-width: 0; }
+    .party-header-top { flex-direction: column; }
+    .party-stats { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .stat { min-width: 0; padding: 10px 4px; }
+    .content-area { scroll-margin-top: 118px; }
+    footer { padding: 26px 14px 34px; }
+  }
+
+  @media (max-width: 480px) {
+    .party-stats { grid-template-columns: repeat(2, 1fr); }
   }
 </style>
 </head>
@@ -370,7 +378,7 @@
 <header>
   <div class="header-inner">
     <div class="header-label">Politische Transparenz · Deutschland</div>
-    <h1>Versprochen.<br><span>Getrackt.</span> Belegt.</h1>
+    <h1>Welche Partei <span>hält</span>, was sie verspricht?</h1>
     <p class="header-sub">Was haben deutsche Parteien versprochen — und was wurde davon tatsächlich umgesetzt? Alle Einträge basieren ausschließlich auf offiziellen Quellen: Wahlprogramme der Parteien und Protokolle des Deutschen Bundestages.</p>
     <div class="source-note">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -379,62 +387,30 @@
   </div>
 </header>
 
-<div class="filter-bar">
-  <div class="filter-inner">
-    <button class="filter-btn active" onclick="filterStatus('all', this)">Alle</button>
-    <button class="filter-btn" onclick="filterStatus('promised', this)">📋 Versprochen</button>
-    <button class="filter-btn" onclick="filterStatus('progress', this)">🔄 In Umsetzung</button>
-    <button class="filter-btn" onclick="filterStatus('done', this)">✅ Umgesetzt</button>
-    <button class="filter-btn" onclick="filterStatus('failed', this)">❌ Nicht umgesetzt</button>
+<!-- STICKY TOOLBAR: Partei-Tabs + Status-Filter -->
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <nav class="party-nav" aria-label="Partei auswählen">
+      <button class="party-tab active" data-party="spd" aria-current="true"><span class="tab-top"><span class="dot"></span>SPD</span><span class="tab-role">Koalition</span></button>
+      <button class="party-tab" data-party="cdu"><span class="tab-top"><span class="dot"></span>CDU/CSU</span><span class="tab-role">Koalition</span></button>
+      <button class="party-tab" data-party="gruene"><span class="tab-top"><span class="dot"></span>Grüne</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="fdp"><span class="tab-top"><span class="dot"></span>FDP</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="afd"><span class="tab-top"><span class="dot"></span>AfD</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="bsw"><span class="tab-top"><span class="dot"></span>BSW</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="linke"><span class="tab-top"><span class="dot"></span>Die Linke</span><span class="tab-role">Opposition</span></button>
+      <button class="party-tab" data-party="ssw"><span class="tab-top"><span class="dot"></span>SSW</span><span class="tab-role">1 Sitz</span></button>
+    </nav>
+    <div class="filter-bar" role="group" aria-label="Nach Status filtern">
+      <button class="filter-chip active" data-filter="all" aria-pressed="true">Alle <span class="chip-count">0</span></button>
+      <button class="filter-chip" data-filter="done" aria-pressed="false"><span class="chip-dot done"></span>Umgesetzt <span class="chip-count">0</span></button>
+      <button class="filter-chip" data-filter="progress" aria-pressed="false"><span class="chip-dot progress"></span>In Umsetzung <span class="chip-count">0</span></button>
+      <button class="filter-chip" data-filter="failed" aria-pressed="false"><span class="chip-dot failed"></span>Nicht umgesetzt <span class="chip-count">0</span></button>
+      <button class="filter-chip" data-filter="promised" aria-pressed="false"><span class="chip-dot promised"></span>Versprochen <span class="chip-count">0</span></button>
+    </div>
   </div>
 </div>
 
 <div class="main">
-
-  <!-- PARTY SIDEBAR -->
-  <nav class="party-nav">
-    <div class="party-nav-label">Parteien</div>
-    <button class="party-btn active" onclick="showParty('spd', this)" style="--party-color:#E3000F">
-      <span class="party-dot" style="background:#E3000F"></span>
-      <span class="party-name-label">SPD</span>
-      <span class="party-short">Koalition</span>
-    </button>
-    <button class="party-btn" onclick="showParty('cdu', this)" style="--party-color:#000000">
-      <span class="party-dot" style="background:#000000"></span>
-      <span class="party-name-label">CDU/CSU</span>
-      <span class="party-short">Koalition</span>
-    </button>
-    <button class="party-btn" onclick="showParty('gruene', this)" style="--party-color:#1AA037">
-      <span class="party-dot" style="background:#1AA037"></span>
-      <span class="party-name-label">Grüne</span>
-      <span class="party-short">Opposition</span>
-    </button>
-    <button class="party-btn" onclick="showParty('fdp', this)" style="--party-color:#FFED00">
-      <span class="party-dot" style="background:#CCBB00"></span>
-      <span class="party-name-label">FDP</span>
-      <span class="party-short">Opposition</span>
-    </button>
-    <button class="party-btn" onclick="showParty('afd', this)" style="--party-color:#009EE0">
-      <span class="party-dot" style="background:#009EE0"></span>
-      <span class="party-name-label">AfD</span>
-      <span class="party-short">Opposition</span>
-    </button>
-    <button class="party-btn" onclick="showParty('bsw', this)" style="--party-color:#7B2D8B">
-      <span class="party-dot" style="background:#7B2D8B"></span>
-      <span class="party-name-label">BSW</span>
-      <span class="party-short">Opposition</span>
-    </button>
-    <button class="party-btn" onclick="showParty('linke', this)" style="--party-color:#BE3075">
-      <span class="party-dot" style="background:#BE3075"></span>
-      <span class="party-name-label">Die Linke</span>
-      <span class="party-short">Opposition</span>
-    </button>
-    <button class="party-btn" onclick="showParty('ssw', this)" style="--party-color:#003C8F">
-      <span class="party-dot" style="background:#003C8F"></span>
-      <span class="party-name-label">SSW</span>
-      <span class="party-short">1 Sitz</span>
-    </button>
-  </nav>
 
   <!-- CONTENT PANELS -->
   <div class="content-area">
@@ -1984,42 +1960,195 @@
       </div>
     </div>
 
-    <!-- CONTRIBUTE BOX -->
-    <div class="contribute-box">
-      <h3>Fehler gefunden? Quelle ergänzen?</h3>
-      <p>Diese Seite lebt von Genauigkeit. Jeder Eintrag muss durch einen direkten Link auf eine offizielle Parteiwebseite oder bundestag.de belegt sein. Vermutungen, Medienberichte oder Sekundärquellen werden nicht akzeptiert.</p>
-    </div>
-
   </div><!-- end content-area -->
 </div><!-- end main -->
 
+<footer>
+  <div class="footer-inner">
+    <h3>Fehler gefunden? Quelle ergänzen?</h3>
+    <p>Diese Seite lebt von Genauigkeit. Jeder Eintrag muss durch einen direkten Link auf eine offizielle Parteiwebseite oder bundestag.de belegt sein. Vermutungen, Medienberichte oder Sekundärquellen werden nicht akzeptiert.</p>
+    <p class="footer-note">Quellen: Offizielle Parteiwebseiten · bundestag.de · Koalitionsverträge (veröffentlicht auf bundesregierung.de)</p>
+  </div>
+</footer>
+
 <script>
-  function showParty(partyId, btn) {
-    document.querySelectorAll('.party-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.party-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('panel-' + partyId).classList.add('active');
-    btn.classList.add('active');
-    filterStatus(currentFilter, document.querySelector('.filter-btn.active'));
+(function () {
+  const PARTIES = ['spd', 'cdu', 'gruene', 'fdp', 'afd', 'bsw', 'linke', 'ssw'];
+  const STATUSES = ['done', 'progress', 'failed', 'promised'];
+  // Zusatzhinweis für Karten, die nur ein Versprechen ohne dokumentiertes Ergebnis zeigen
+  const PROMISED_NOTES = {
+    spd:    '📌 Aktueller Stand: Bisher nur versprochen — noch keine Umsetzung im Bundestag dokumentiert. Als Regierungspartei kann die SPD das Vorhaben noch umsetzen.',
+    cdu:    '📌 Aktueller Stand: Bisher nur versprochen — noch keine Umsetzung im Bundestag dokumentiert. Als Regierungspartei kann die CDU/CSU das Vorhaben noch umsetzen.',
+    gruene: '📌 Aktueller Stand: Reine Forderung — die Grünen sind in der Opposition und können sie ohne Mehrheit derzeit nicht umsetzen. Das Vorhaben liegt auf der Seitenlinie.',
+    afd:    '📌 Aktueller Stand: Reine Forderung — die AfD ist in der Opposition und kann sie ohne Mehrheit derzeit nicht umsetzen. Das Vorhaben liegt auf der Seitenlinie.',
+    linke:  '📌 Aktueller Stand: Reine Forderung — Die Linke ist in der Opposition und kann sie ohne Mehrheit derzeit nicht umsetzen. Das Vorhaben liegt auf der Seitenlinie.',
+    ssw:    '📌 Aktueller Stand: Reine Forderung — der SSW hat einen Sitz und keine Regierungsbeteiligung; eine Umsetzung ist derzeit nicht möglich.',
+    fdp:    '📌 Aktueller Stand: Reine Forderung — die FDP ist seit Februar 2025 nicht im Bundestag vertreten; eine Umsetzung ist derzeit nicht möglich.',
+    bsw:    '📌 Aktueller Stand: Reine Forderung — das BSW ist nicht im Bundestag vertreten; eine Umsetzung ist derzeit nicht möglich.'
+  };
+  const nav = document.querySelector('.party-nav');
+  const filterBar = document.querySelector('.filter-bar');
+  const contentArea = document.querySelector('.content-area');
+  let currentFilter = 'all';
+  let currentParty = 'spd';
+
+  const smooth = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+  function counts(panel) {
+    const c = { all: 0 };
+    STATUSES.forEach(s => {
+      c[s] = panel.querySelectorAll('.promise-card[data-status="' + s + '"]').length;
+      c.all += c[s];
+    });
+    return c;
   }
 
-  let currentFilter = 'all';
+  function totalCounts() {
+    const t = { all: 0, done: 0, progress: 0, failed: 0, promised: 0 };
+    PARTIES.forEach(id => {
+      const panel = document.getElementById('panel-' + id);
+      if (!panel) return;
+      const c = counts(panel);
+      STATUSES.forEach(s => { t[s] += c[s]; });
+      t.all += c.all;
+    });
+    return t;
+  }
 
-  function filterStatus(status, btn) {
-    currentFilter = status;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-
-    const activePanel = document.querySelector('.party-panel.active');
-    if (!activePanel) return;
-
-    activePanel.querySelectorAll('.promise-card').forEach(card => {
-      if (status === 'all' || card.dataset.status === status) {
-        card.classList.remove('hidden');
-      } else {
-        card.classList.add('hidden');
+  // Statistikzahlen aus den echten Karten berechnen, Fortschrittsbalken und
+  // Status-Hinweise für reine Versprechen einfügen
+  function initStats() {
+    PARTIES.forEach(id => {
+      const panel = document.getElementById('panel-' + id);
+      if (!panel) return;
+      const c = counts(panel);
+      STATUSES.forEach(s => {
+        const el = panel.querySelector('.stat-num.' + s);
+        if (el) el.textContent = c[s];
+      });
+      const header = panel.querySelector('.party-header');
+      if (header && c.all > 0) {
+        const track = document.createElement('div');
+        track.className = 'progress-track';
+        track.setAttribute('aria-hidden', 'true');
+        STATUSES.forEach(s => {
+          if (!c[s]) return;
+          const seg = document.createElement('span');
+          seg.className = 'seg-' + s;
+          seg.style.flex = c[s];
+          track.appendChild(seg);
+        });
+        header.appendChild(track);
       }
+      panel.querySelectorAll('.promise-card[data-status="promised"]').forEach(card => {
+        if (card.querySelector('.promise-result')) return;
+        const note = document.createElement('div');
+        note.className = 'promise-result promised';
+        note.textContent = PROMISED_NOTES[id] || '';
+        const col = card.firstElementChild;
+        const src = col && col.querySelector('.card-source');
+        if (src) col.insertBefore(note, src); else if (col) col.appendChild(note);
+      });
+    });
+    const hint = document.createElement('div');
+    hint.className = 'empty-state no-selection hidden';
+    hint.textContent = 'Keine Partei ausgewählt — wähle oben eine Partei, um ihre Versprechen und deren Umsetzungsstand zu sehen.';
+    const firstPanel = contentArea.querySelector('.party-panel');
+    contentArea.insertBefore(hint, firstPanel);
+  }
+
+  function updateChipCounts() {
+    const panel = currentParty ? document.getElementById('panel-' + currentParty) : null;
+    const c = panel ? counts(panel) : totalCounts();
+    filterBar.querySelectorAll('.filter-chip').forEach(chip => {
+      const badge = chip.querySelector('.chip-count');
+      if (badge) badge.textContent = c[chip.dataset.filter] || 0;
     });
   }
+
+  function applyFilter() {
+    const panel = document.querySelector('.party-panel.active');
+    if (!panel) return;
+    let visible = 0;
+    panel.querySelectorAll('.promise-card').forEach(card => {
+      const show = currentFilter === 'all' || card.dataset.status === currentFilter;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    panel.querySelectorAll('.cards-grid').forEach(grid => {
+      const any = grid.querySelector('.promise-card:not(.hidden)') !== null;
+      grid.classList.toggle('hidden', !any);
+      const prev = grid.previousElementSibling;
+      if (prev && prev.classList.contains('section-title')) prev.classList.toggle('hidden', !any);
+    });
+    let empty = panel.querySelector('.empty-state');
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.className = 'empty-state hidden';
+      empty.textContent = 'Keine Einträge mit diesem Status.';
+      panel.appendChild(empty);
+    }
+    empty.classList.toggle('hidden', visible !== 0);
+  }
+
+  // id = null bedeutet: keine Partei ausgewählt (Abwahl per erneutem Klick)
+  function showParty(id, updateHash) {
+    if (id !== null && !document.getElementById('panel-' + id)) id = 'spd';
+    currentParty = id;
+    document.querySelectorAll('.party-panel').forEach(p => {
+      p.classList.toggle('active', id !== null && p.id === 'panel-' + id);
+    });
+    nav.querySelectorAll('.party-tab').forEach(b => {
+      const on = id !== null && b.dataset.party === id;
+      b.classList.toggle('active', on);
+      if (on) {
+        b.setAttribute('aria-current', 'true');
+        b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: smooth() });
+      } else {
+        b.removeAttribute('aria-current');
+      }
+    });
+    const hint = contentArea.querySelector('.no-selection');
+    if (hint) hint.classList.toggle('hidden', id !== null);
+    if (updateHash) {
+      history.replaceState(null, '', id !== null ? '#' + id : location.pathname);
+      if (id !== null && window.scrollY > 200) {
+        contentArea.scrollIntoView({ block: 'start', behavior: smooth() });
+      }
+    }
+    updateChipCounts();
+    applyFilter();
+  }
+
+  function setFilter(filter) {
+    currentFilter = filter;
+    filterBar.querySelectorAll('.filter-chip').forEach(c => {
+      const on = c.dataset.filter === filter;
+      c.classList.toggle('active', on);
+      c.setAttribute('aria-pressed', on);
+    });
+    applyFilter();
+  }
+
+  nav.addEventListener('click', e => {
+    const btn = e.target.closest('[data-party]');
+    if (!btn) return;
+    showParty(btn.dataset.party === currentParty ? null : btn.dataset.party, true);
+  });
+
+  filterBar.addEventListener('click', e => {
+    const chip = e.target.closest('[data-filter]');
+    if (!chip) return;
+    // Erneuter Klick auf den aktiven Filter wählt ihn ab (zurück zu "Alle")
+    const f = chip.dataset.filter;
+    setFilter(chip.classList.contains('active') && f !== 'all' ? 'all' : f);
+  });
+
+  window.addEventListener('hashchange', () => showParty(location.hash.slice(1) || 'spd', false));
+
+  initStats();
+  showParty(location.hash.slice(1) || 'spd', false);
+})();
 </script>
 
 </body>
