@@ -345,11 +345,15 @@
     .main { padding: 16px 14px 48px; }
     .header-inner { padding: 22px 0 16px; }
     .header-sub { font-size: 13.5px; }
-    .party-tab { padding: 8px 12px 7px; min-height: 48px; min-width: 0; }
+    /* Buttons im 2-Spalten-Raster statt seitlichem Wischen; Leiste scrollt mit */
+    .toolbar { position: static; }
+    .party-nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; overflow: visible; }
+    .party-tab { width: 100%; padding: 8px 12px 7px; min-height: 48px; min-width: 0; }
+    .anchor-tab { width: 100%; min-height: 48px; white-space: normal; line-height: 1.25; padding: 9px 12px; }
+    .content-area, section, .promise-card { scroll-margin-top: 12px; }
     .party-header-top { flex-direction: column; }
     .party-stats { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
     .stat { min-width: 0; padding: 10px 4px; }
-    .content-area { scroll-margin-top: 118px; }
     footer { padding: 26px 14px 34px; }
   }
 
@@ -437,3 +441,7 @@
     100% { box-shadow: var(--shadow); }
   }
   @media (prefers-reduced-motion: reduce) { .card-flash { animation: none; } }
+
+  @media (max-width: 768px) {
+    .anchor-tab { width: 100%; min-height: 48px; white-space: normal; line-height: 1.25; padding: 9px 12px; }
+  }
