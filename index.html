@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="page-parteien">
 
 <header>
   <div class="header-inner">
@@ -1788,6 +1788,18 @@
     const f = chip.dataset.filter;
     setFilter(chip.classList.contains('active') && f !== 'all' ? 'all' : f);
   });
+
+  // Mobil: Leiste klebt mit negativem Versatz, sodass nur die Filterzeile oben sichtbar bleibt
+  const toolbar = document.querySelector('.toolbar');
+  function updateToolbarOffset() {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      toolbar.style.top = -filterBar.offsetTop + 'px';
+    } else {
+      toolbar.style.top = '';
+    }
+  }
+  window.addEventListener('resize', updateToolbarOffset);
+  updateToolbarOffset();
 
   window.addEventListener('hashchange', () => showParty(location.hash.slice(1) || 'spd', false));
 

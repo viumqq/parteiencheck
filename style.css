@@ -351,6 +351,12 @@
     .stat { min-width: 0; padding: 10px 4px; }
     .content-area { scroll-margin-top: 118px; }
     footer { padding: 26px 14px 34px; }
+    /* Nur Parteien-Seite: Kacheln im 2-Spalten-Raster; die Leiste klebt so,
+       dass beim Scrollen nur die Status-Filterzeile oben sichtbar bleibt
+       (negativer top-Wert wird per JS auf die Rasterhöhe gesetzt) */
+    .page-parteien .party-nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; overflow: visible; }
+    .page-parteien .party-tab { width: 100%; }
+    .page-parteien .content-area { scroll-margin-top: 76px; }
   }
 
   @media (max-width: 480px) {
