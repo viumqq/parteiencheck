@@ -426,3 +426,14 @@
     .budget-legend { grid-template-columns: 1fr; }
   }
   .budget-note { font-size: 12px; color: var(--ink-3); margin-bottom: 10px; line-height: 1.5; }
+  .budget-legend li[data-target] { cursor: pointer; border-radius: 6px; }
+  .budget-legend li[data-target]:hover { color: var(--ink); }
+  .budget-legend li[data-target]:hover .b-jump { transform: translateY(2px); }
+  .b-jump { color: var(--ink-3); font-weight: 700; margin-left: 2px; transition: transform 0.15s; }
+  .promise-card { scroll-margin-top: 125px; }
+  .card-flash { animation: cardflash 1.8s ease-out; }
+  @keyframes cardflash {
+    0%, 35% { box-shadow: 0 0 0 3px var(--ink); }
+    100% { box-shadow: var(--shadow); }
+  }
+  @media (prefers-reduced-motion: reduce) { .card-flash { animation: none; } }
