@@ -65,6 +65,9 @@
       <strong>Hinweis zur Methodik:</strong> Diese Seite dokumentiert ausschließlich Versprechen aus offiziellen Wahlprogrammen (Bundestagswahl 2021 und 2025) sowie verabschiedete Gesetze und Beschlüsse, die im Deutschen Bundestag protokolliert sind. Bewertungen von "Umgesetzt" / "In Umsetzung" / "Nicht umgesetzt" beziehen sich auf den aktuellen Stand der Gesetzgebung und sind mit direkten Quellen verknüpft. <strong>Diese Seite erhebt keinen Anspruch auf Vollständigkeit.</strong> Für eigene Recherchen: <a href="https://www.bundestag.de/gesetze" target="_blank">bundestag.de/gesetze</a>
     </div>
 
+    <!-- PARTEIEN-VERGLEICH (wird per JS aus den Karten berechnet) -->
+    <div class="compare-card" id="vergleich"></div>
+
     <!-- SPD PANEL -->
     <div class="party-panel active" id="panel-spd" style="--party-color:#E3000F">
       <div class="party-header" style="border-left-color:#E3000F">
@@ -1695,11 +1698,67 @@
         if (src) col.insertBefore(note, src); else if (col) col.appendChild(note);
       });
     });
+    buildCompare();
+
     const hint = document.createElement('div');
     hint.className = 'empty-state no-selection hidden';
     hint.textContent = 'Keine Partei ausgewählt — wähle oben eine Partei, um ihre Versprechen und deren Umsetzungsstand zu sehen.';
     const firstPanel = contentArea.querySelector('.party-panel');
     contentArea.insertBefore(hint, firstPanel);
+  }
+
+  const PARTY_META = {
+    spd:    { name: 'SPD', color: '#E3000F' },
+    cdu:    { name: 'CDU/CSU', color: '#000000' },
+    gruene: { name: 'Grüne', color: '#1AA037' },
+    fdp:    { name: 'FDP', color: '#FFED00' },
+    afd:    { name: 'AfD', color: '#009EE0' },
+    bsw:    { name: 'BSW', color: '#7B2D8B' },
+    linke:  { name: 'Die Linke', color: '#BE3075' },
+    ssw:    { name: 'SSW', color: '#003C8F' }
+  };
+
+  // Vergleichsblock: Kennzahlen aller Parteien auf einen Blick
+  function buildCompare() {
+    const box = document.getElementById('vergleich');
+    if (!box) return;
+    const data = [];
+    PARTIES.forEach(id => {
+      const panel = document.getElementById('panel-' + id);
+      if (!panel) return;
+      data.push({ id, ...PARTY_META[id], ...counts(panel) });
+    });
+    const names = arr => arr.map(d => d.name).join(' & ');
+    const maxDone = Math.max(...data.map(d => d.done));
+    const maxProg = Math.max(...data.map(d => d.progress));
+    const rated = data.filter(d => d.done + d.failed > 0);
+    const quote = d => d.done / (d.done + d.failed);
+    const bestQuote = rated.length ? Math.max(...rated.map(quote)) : 0;
+    const tiles = [
+      { icon: '🏆', label: 'Am meisten umgesetzt', value: names(data.filter(d => d.done === maxDone && maxDone > 0)), sub: maxDone + ' Versprechen' },
+      { icon: '🔧', label: 'Am meisten in Arbeit', value: names(data.filter(d => d.progress === maxProg && maxProg > 0)), sub: maxProg + ' Vorhaben' },
+      { icon: '📊', label: 'Beste Umsetzungsquote', value: names(rated.filter(d => quote(d) === bestQuote)), sub: Math.round(bestQuote * 100) + ' % der bewerteten Versprechen gehalten' }
+    ];
+    const maxTotal = Math.max(...data.map(d => d.all));
+    const sorted = data.slice().sort((a, b) => (b.done - a.done) || (b.progress - a.progress) || (a.failed - b.failed));
+    box.innerHTML =
+      '<div class="promise-topic">Parteien im Vergleich · automatisch aus allen Einträgen berechnet</div>' +
+      '<div class="promise-title">Wer liefert? Alle Parteien auf einen Blick</div>' +
+      '<div class="compare-tiles">' + tiles.map(t =>
+        '<div class="compare-tile"><span class="ct-icon">' + t.icon + '</span><span class="ct-label">' + t.label + '</span><span class="ct-value">' + (t.value || '—') + '</span><span class="ct-sub">' + t.sub + '</span></div>'
+      ).join('') + '</div>' +
+      '<div class="compare-rows">' + sorted.map(d =>
+        '<button class="compare-row" data-party="' + d.id + '" title="Zu ' + d.name + ' springen">' +
+          '<span class="cr-name"><span class="dot" style="background:' + d.color + '"></span>' + d.name + '</span>' +
+          '<span class="cr-bar"><span style="flex:' + d.done + ';background:var(--st-done)"></span><span style="flex:' + d.progress + ';background:var(--st-progress)"></span><span style="flex:' + d.failed + ';background:var(--st-failed)"></span><span style="flex:' + d.promised + ';background:#D4D4D8"></span><span style="flex:' + (maxTotal - d.all) + ';background:transparent"></span></span>' +
+          '<span class="cr-nums"><b class="n-done">' + d.done + '</b> ✓ · <b class="n-prog">' + d.progress + '</b> 🔄 · <b class="n-fail">' + d.failed + '</b> ✗ · ' + d.promised + ' offen</span>' +
+        '</button>'
+      ).join('') + '</div>' +
+      '<p class="compare-note">Zur Einordnung: Umsetzen kann nur, wer (mit)regiert — SPD und CDU/CSU aktuell, SPD, Grüne und FDP in der Ampel-Zeit (2021–2024). Forderungen der Opposition zählen als „offen". Klick auf eine Zeile öffnet die Details der Partei.</p>';
+    box.addEventListener('click', e => {
+      const row = e.target.closest('[data-party]');
+      if (row) showParty(row.dataset.party, true);
+    });
   }
 
   function updateChipCounts() {
