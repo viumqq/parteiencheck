@@ -1718,7 +1718,7 @@
     ssw:    { name: 'SSW', color: '#003C8F' }
   };
 
-  // Vergleichsblock: Kennzahlen aller Parteien auf einen Blick
+  // Vergleichsblock: Anteil umgesetzter Versprechen je Partei
   function buildCompare() {
     const box = document.getElementById('vergleich');
     if (!box) return;
@@ -1726,35 +1726,21 @@
     PARTIES.forEach(id => {
       const panel = document.getElementById('panel-' + id);
       if (!panel) return;
-      data.push({ id, ...PARTY_META[id], ...counts(panel) });
+      const c = counts(panel);
+      data.push({ id, ...PARTY_META[id], ...c, pct: c.all ? Math.round((c.done / c.all) * 100) : 0 });
     });
-    const names = arr => arr.map(d => d.name).join(' & ');
-    const maxDone = Math.max(...data.map(d => d.done));
-    const maxProg = Math.max(...data.map(d => d.progress));
-    const rated = data.filter(d => d.done + d.failed > 0);
-    const quote = d => d.done / (d.done + d.failed);
-    const bestQuote = rated.length ? Math.max(...rated.map(quote)) : 0;
-    const tiles = [
-      { icon: '🏆', label: 'Am meisten umgesetzt', value: names(data.filter(d => d.done === maxDone && maxDone > 0)), sub: maxDone + ' Versprechen' },
-      { icon: '🔧', label: 'Am meisten in Arbeit', value: names(data.filter(d => d.progress === maxProg && maxProg > 0)), sub: maxProg + ' Vorhaben' },
-      { icon: '📊', label: 'Beste Umsetzungsquote', value: names(rated.filter(d => quote(d) === bestQuote)), sub: Math.round(bestQuote * 100) + ' % der bewerteten Versprechen gehalten' }
-    ];
-    const maxTotal = Math.max(...data.map(d => d.all));
-    const sorted = data.slice().sort((a, b) => (b.done - a.done) || (b.progress - a.progress) || (a.failed - b.failed));
+    data.sort((a, b) => (b.pct - a.pct) || (b.done - a.done));
     box.innerHTML =
-      '<div class="promise-topic">Parteien im Vergleich · automatisch aus allen Einträgen berechnet</div>' +
-      '<div class="promise-title">Wer liefert? Alle Parteien auf einen Blick</div>' +
-      '<div class="compare-tiles">' + tiles.map(t =>
-        '<div class="compare-tile"><span class="ct-icon">' + t.icon + '</span><span class="ct-label">' + t.label + '</span><span class="ct-value">' + (t.value || '—') + '</span><span class="ct-sub">' + t.sub + '</span></div>'
-      ).join('') + '</div>' +
-      '<div class="compare-rows">' + sorted.map(d =>
+      '<div class="promise-topic">Parteien im Vergleich · automatisch berechnet</div>' +
+      '<div class="promise-title">Wie viel Prozent der Versprechen wurden umgesetzt?</div>' +
+      '<div class="compare-rows">' + data.map(d =>
         '<button class="compare-row" data-party="' + d.id + '" title="Zu ' + d.name + ' springen">' +
           '<span class="cr-name"><span class="dot" style="background:' + d.color + '"></span>' + d.name + '</span>' +
-          '<span class="cr-bar"><span style="flex:' + d.done + ';background:var(--st-done)"></span><span style="flex:' + d.progress + ';background:var(--st-progress)"></span><span style="flex:' + d.failed + ';background:var(--st-failed)"></span><span style="flex:' + d.promised + ';background:#D4D4D8"></span><span style="flex:' + (maxTotal - d.all) + ';background:transparent"></span></span>' +
-          '<span class="cr-nums"><b class="n-done">' + d.done + '</b> ✓ · <b class="n-prog">' + d.progress + '</b> 🔄 · <b class="n-fail">' + d.failed + '</b> ✗ · ' + d.promised + ' offen</span>' +
+          '<span class="cr-bar"><span style="width:' + d.pct + '%;background:var(--st-done)"></span></span>' +
+          '<span class="cr-nums"><b class="n-done">' + d.pct + ' %</b> (' + d.done + ' von ' + d.all + ')</span>' +
         '</button>'
       ).join('') + '</div>' +
-      '<p class="compare-note">Zur Einordnung: Umsetzen kann nur, wer (mit)regiert — SPD und CDU/CSU aktuell, SPD, Grüne und FDP in der Ampel-Zeit (2021–2024). Forderungen der Opposition zählen als „offen". Klick auf eine Zeile öffnet die Details der Partei.</p>';
+      '<p class="compare-note">Umsetzen kann nur, wer (mit)regiert — Forderungen der Opposition bleiben deshalb bei 0 %. Klick auf eine Zeile öffnet die Details der Partei.</p>';
     box.addEventListener('click', e => {
       const row = e.target.closest('[data-party]');
       if (row) showParty(row.dataset.party, true);
