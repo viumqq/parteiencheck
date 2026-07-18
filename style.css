@@ -401,3 +401,27 @@
   .topic-header { margin-bottom: 8px; }
   .topic-header .party-stats { margin-top: 4px; }
   section.hidden, .topic-header.hidden { display: none; }
+
+  /* HAUSHALTS-AUFTEILUNG (Steuergeld-Seite) */
+  .budget-card {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .budget-bar { display: flex; height: 16px; border-radius: 999px; overflow: hidden; margin: 14px 0 12px; }
+  .budget-bar span { display: block; }
+  .b1 { background: #0A0A0A; }
+  .b2 { background: #3F3F46; }
+  .b3 { background: #71717A; }
+  .b4 { background: #A1A1AA; }
+  .b5 { background: #E4E4E7; }
+  .budget-legend { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
+  .budget-legend li { font-size: 12.5px; color: var(--ink-2); display: flex; align-items: center; gap: 8px; line-height: 1.4; }
+  .budget-legend strong { color: var(--ink); font-weight: 700; }
+  .b-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.15); }
+  @media (max-width: 768px) {
+    .budget-legend { grid-template-columns: 1fr; }
+  }
