@@ -1757,7 +1757,8 @@
     if (hint) hint.classList.toggle('hidden', id !== null);
     if (updateHash) {
       history.replaceState(null, '', id !== null ? '#' + id : location.pathname);
-      if (id !== null && window.scrollY > 200) {
+      // Bei jeder Parteiwahl direkt zur Liste scrollen (Desktop und mobil)
+      if (id !== null) {
         contentArea.scrollIntoView({ block: 'start', behavior: smooth() });
       }
     }
