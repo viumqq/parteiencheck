@@ -57,6 +57,15 @@
 
 <div class="main">
 
+  <!-- SCHNELLÜBERSICHT: Vergleich aller Parteien (Inhalt wird per JS aus den Karten berechnet) -->
+  <section class="overview" id="overview" aria-labelledby="overview-title">
+    <h2 id="overview-title" class="overview-title">Schnellübersicht: Alle Parteien im Vergleich</h2>
+    <p class="overview-sub">Die wichtigsten Zahlen von weiter unten auf einen Blick — automatisch aus allen dokumentierten Einträgen berechnet. Partei antippen für alle Details.</p>
+    <div class="overview-tiles"></div>
+    <div class="overview-table" role="list" aria-label="Parteien-Ranking nach umgesetzten Versprechen"></div>
+    <p class="overview-note">Quote = Umgesetzt im Verhältnis zu allen bewertbaren Einträgen (umgesetzt, in Arbeit, gescheitert). Parteien ohne Regierungsbeteiligung können ihre Versprechen derzeit nicht umsetzen — ihre Einträge sind reine Forderungen und fließen nicht in die Quote ein.</p>
+  </section>
+
   <!-- CONTENT PANELS -->
   <div class="content-area">
 
@@ -1631,6 +1640,17 @@
     fdp:    '📌 Aktueller Stand: Reine Forderung — die FDP ist seit Februar 2025 nicht im Bundestag vertreten; eine Umsetzung ist derzeit nicht möglich.',
     bsw:    '📌 Aktueller Stand: Reine Forderung — das BSW ist nicht im Bundestag vertreten; eine Umsetzung ist derzeit nicht möglich.'
   };
+  // Anzeigename, Farbe und Rolle je Partei für die Schnellübersicht
+  const PARTY_META = {
+    spd:    { name: 'SPD',       color: '#E3000F', role: 'Koalition' },
+    cdu:    { name: 'CDU/CSU',   color: '#000000', role: 'Koalition' },
+    gruene: { name: 'Grüne',     color: '#1AA037', role: 'Opposition' },
+    fdp:    { name: 'FDP',       color: '#FFED00', role: 'Nicht im Bundestag' },
+    afd:    { name: 'AfD',       color: '#009EE0', role: 'Opposition' },
+    bsw:    { name: 'BSW',       color: '#7B2D8B', role: 'Nicht im Bundestag' },
+    linke:  { name: 'Die Linke', color: '#BE3075', role: 'Opposition' },
+    ssw:    { name: 'SSW',       color: '#003C8F', role: '1 Sitz' }
+  };
   const nav = document.querySelector('.party-nav');
   const filterBar = document.querySelector('.filter-bar');
   const contentArea = document.querySelector('.content-area');
@@ -1700,6 +1720,142 @@
     hint.textContent = 'Keine Partei ausgewählt — wähle oben eine Partei, um ihre Versprechen und deren Umsetzungsstand zu sehen.';
     const firstPanel = contentArea.querySelector('.party-panel');
     contentArea.insertBefore(hint, firstPanel);
+  }
+
+  // Kennzahlen aller Parteien für die Schnellübersicht einsammeln
+  function partyData() {
+    return PARTIES.map(id => {
+      const panel = document.getElementById('panel-' + id);
+      if (!panel) return null;
+      const c = counts(panel);
+      const topics = new Set();
+      panel.querySelectorAll('.promise-topic').forEach(t => topics.add(t.textContent.trim()));
+      const rated = c.done + c.progress + c.failed; // bewertbare Einträge (ohne reine Versprechen)
+      return Object.assign({
+        id: id,
+        topics: topics.size,
+        rated: rated,
+        quote: rated > 0 ? c.done / rated : null
+      }, PARTY_META[id], c);
+    }).filter(Boolean);
+  }
+
+  // Schnellübersicht oben auf der Seite: Highlight-Kacheln + Ranking-Zeilen
+  function initOverview() {
+    const section = document.getElementById('overview');
+    if (!section) return;
+    const data = partyData();
+    // Nur Parteien mit genug bewertbaren Einträgen für "wenigste"/"Quote" vergleichen,
+    // sonst verzerren Parteien ohne jede Regierungsbilanz das Ergebnis
+    const ratedParties = data.filter(p => p.rated >= 2);
+
+    function leaders(arr, value) {
+      if (!arr.length) return { names: '—', best: null };
+      const best = Math.max.apply(null, arr.map(value));
+      return { names: arr.filter(p => value(p) === best).map(p => p.name).join(' & '), best: best };
+    }
+    function trailers(arr, value) {
+      if (!arr.length) return { names: '—', best: null };
+      const worst = Math.min.apply(null, arr.map(value));
+      return { names: arr.filter(p => value(p) === worst).map(p => p.name).join(' & '), best: worst };
+    }
+
+    const mostDone = leaders(data, p => p.done);
+    const leastDone = trailers(ratedParties, p => p.done);
+    const bestQuote = leaders(ratedParties, p => p.quote);
+    const mostTopics = leaders(data, p => p.topics);
+    const mostActive = leaders(data, p => p.done + p.progress);
+
+    const tiles = [
+      { icon: '🏆', label: 'Am meisten umgesetzt', names: mostDone.names, detail: mostDone.best + ' Versprechen umgesetzt' },
+      { icon: '📉', label: 'Am wenigsten umgesetzt', names: leastDone.names, detail: 'nur ' + leastDone.best + ' umgesetzt (mit Bilanz)' },
+      { icon: '🎯', label: 'Versprechen am besten gehalten', names: bestQuote.names, detail: Math.round(bestQuote.best * 100) + ' % der bewertbaren Einträge' },
+      { icon: '🔄', label: 'Arbeitet an den meisten Vorhaben', names: mostActive.names, detail: mostActive.best + ' umgesetzt oder in Arbeit' },
+      { icon: '📚', label: 'Meiste Themenfelder', names: mostTopics.names, detail: mostTopics.best + ' verschiedene Themen' }
+    ];
+
+    const tilesEl = section.querySelector('.overview-tiles');
+    tiles.forEach(t => {
+      const el = document.createElement('div');
+      el.className = 'ov-tile';
+      el.innerHTML = '<span class="ov-tile-label">' + t.icon + ' ' + t.label + '</span>' +
+        '<span class="ov-tile-value"></span><span class="ov-tile-detail"></span>';
+      el.querySelector('.ov-tile-value').textContent = t.names;
+      el.querySelector('.ov-tile-detail').textContent = t.detail;
+      tilesEl.appendChild(el);
+    });
+
+    // Ranking: meiste Umsetzungen zuerst, dann beste Quote, dann meiste Aktivität
+    const ranking = data.slice().sort((a, b) =>
+      (b.done - a.done) || ((b.quote || 0) - (a.quote || 0)) || ((b.done + b.progress) - (a.done + a.progress)) || (b.all - a.all)
+    );
+    const tableEl = section.querySelector('.overview-table');
+    const headRow = document.createElement('div');
+    headRow.className = 'ov-row ov-head';
+    headRow.setAttribute('aria-hidden', 'true');
+    headRow.innerHTML = '<span class="ov-party">Partei</span><span class="ov-bar-wrap">Bilanz</span>' +
+      '<span class="ov-num" title="Umgesetzt">✅</span><span class="ov-num" title="In Arbeit">🔄</span>' +
+      '<span class="ov-num" title="Gescheitert">❌</span><span class="ov-num" title="Nur versprochen">📋</span>' +
+      '<span class="ov-quote">Quote</span>';
+    tableEl.appendChild(headRow);
+
+    ranking.forEach(p => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'ov-row';
+      row.dataset.party = p.id;
+      row.setAttribute('role', 'listitem');
+      row.setAttribute('aria-label', p.name + ': ' + p.done + ' umgesetzt, ' + p.progress + ' in Arbeit, ' +
+        p.failed + ' gescheitert, ' + p.promised + ' nur versprochen. Details anzeigen.');
+
+      const party = document.createElement('span');
+      party.className = 'ov-party';
+      const dot = document.createElement('span');
+      dot.className = 'ov-dot';
+      dot.style.background = p.color;
+      const nameEl = document.createElement('span');
+      nameEl.className = 'ov-name';
+      nameEl.textContent = p.name;
+      const roleEl = document.createElement('span');
+      roleEl.className = 'ov-role';
+      roleEl.textContent = p.role;
+      party.appendChild(dot);
+      party.appendChild(nameEl);
+      party.appendChild(roleEl);
+
+      const barWrap = document.createElement('span');
+      barWrap.className = 'ov-bar-wrap';
+      const bar = document.createElement('span');
+      bar.className = 'ov-bar';
+      STATUSES.forEach(s => {
+        if (!p[s]) return;
+        const seg = document.createElement('span');
+        seg.className = 'seg-' + s;
+        seg.style.flex = p[s];
+        bar.appendChild(seg);
+      });
+      barWrap.appendChild(bar);
+
+      row.appendChild(party);
+      row.appendChild(barWrap);
+      STATUSES.forEach(s => {
+        const num = document.createElement('span');
+        num.className = 'ov-num ov-' + s;
+        num.textContent = p[s];
+        row.appendChild(num);
+      });
+      const quoteEl = document.createElement('span');
+      quoteEl.className = 'ov-quote';
+      quoteEl.textContent = p.quote === null ? '—' : Math.round(p.quote * 100) + ' %';
+      row.appendChild(quoteEl);
+
+      tableEl.appendChild(row);
+    });
+
+    tableEl.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-party]');
+      if (btn) showParty(btn.dataset.party, true);
+    });
   }
 
   function updateChipCounts() {
@@ -1805,6 +1961,7 @@
   window.addEventListener('hashchange', () => showParty(location.hash.slice(1) || 'spd', false));
 
   initStats();
+  initOverview();
   showParty(location.hash.slice(1) || 'spd', false);
 })();
 </script>
