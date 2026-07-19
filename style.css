@@ -231,7 +231,7 @@
   .cards-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 8px; }
   .cards-grid.hidden { display: none; }
   @media (min-width: 1024px) {
-    .cards-grid { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); }
+    .cards-grid { grid-template-columns: 1fr; }
   }
 
   .promise-card {
