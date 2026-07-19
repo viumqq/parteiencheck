@@ -562,19 +562,37 @@
     --accent: var(--st-promised);
     width: 100%;
     height: 100%;
-    background: linear-gradient(165deg, #17171a, #000000);
+    background:
+      radial-gradient(120% 90% at 10% 0%, color-mix(in srgb, var(--accent) 34%, #0a0a0a) 0%, #08080a 58%),
+      linear-gradient(165deg, #18181b, #000000);
     color: #FFFFFF;
-    padding: 9% 9%;
+    padding: 8% 8%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 10px;
+    gap: 3%;
     position: relative;
-    container-type: inline-size;
-    box-shadow: inset 6px 0 0 0 var(--accent);
+    container-type: size;
+    overflow: hidden;
+  }
+  .share-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: var(--accent);
+  }
+  .share-brand {
+    font-size: clamp(8px, 2.3cqmin, 15px);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   .share-kicker {
-    font-size: clamp(9px, 2.8cqw, 13px);
+    font-size: clamp(9px, 2.8cqmin, 17px);
     text-transform: uppercase;
     letter-spacing: 0.13em;
     font-weight: 700;
@@ -584,14 +602,60 @@
     gap: 7px;
   }
   .share-kicker .dot { width: 9px; height: 9px; border-radius: 3px; background: var(--accent); flex-shrink: 0; }
-  .share-headline { font-size: clamp(15px, 7cqw, 30px); font-weight: 800; line-height: 1.14; letter-spacing: -0.01em; }
-  .share-body { font-size: clamp(10.5px, 3cqw, 15px); line-height: 1.5; color: rgba(255,255,255,0.82); }
+  .share-headline {
+    font-size: clamp(14px, 6.6cqmin, 42px);
+    font-weight: 800;
+    line-height: 1.14;
+    letter-spacing: -0.01em;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .share-body { font-size: clamp(10.5px, 3cqmin, 18px); line-height: 1.5; color: rgba(255,255,255,0.82); }
+
+  /* "Versprochen" vs. "Ergebnis" — mehr Kontext, Vorher/Nachher-Format */
+  .share-quotes { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(7px, 2.4cqmin, 20px); min-height: 0; }
+  .share-qblock { border-left: 3px solid rgba(255,255,255,0.2); padding-left: clamp(8px, 2.4cqmin, 16px); }
+  .share-qblock.result { border-left-color: var(--accent); }
+  .share-qlabel {
+    font-size: clamp(7.5px, 2.1cqmin, 13px);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 2px;
+  }
+  .share-qblock.result .share-qlabel { color: var(--accent); }
+  .share-qtext {
+    font-size: clamp(10px, 2.9cqmin, 20px);
+    line-height: 1.42;
+    color: rgba(255,255,255,0.92);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  /* Zusatz-Elemente (Marke, "Versprochen"-Block, Hashtags) brauchen mehr
+     Platz als eine kleine quadratische Post-Kachel bietet — dort zählt nur
+     das Nötigste (Titel + Ergebnis + Badge). Ab Story-Kachel-Höhe bzw. im
+     Vollbild-Modal ist genug Raum für den vollen Vorher/Nachher-Aufbau. */
+  .share-brand, .share-hashtags, .share-qblock.top { display: none; }
+  @container (min-height: 260px) {
+    .share-brand { display: flex; }
+    .share-hashtags { display: block; }
+  }
+  @container (min-height: 300px) {
+    .share-qblock.top { display: block; }
+  }
+
   .share-badge {
     align-self: flex-start;
     display: inline-flex;
     padding: 5px 12px;
     border-radius: 999px;
-    font-size: clamp(9px, 2.5cqw, 12px);
+    font-size: clamp(9px, 2.5cqmin, 17px);
     font-weight: 700;
     background: var(--accent);
     color: #0A0A0A;
@@ -601,24 +665,35 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    font-size: clamp(8px, 2.1cqw, 10.5px);
+    font-size: clamp(8px, 2.1cqmin, 14px);
     color: rgba(255,255,255,0.45);
     font-weight: 700;
     letter-spacing: 0.03em;
     border-top: 1px solid rgba(255,255,255,0.14);
     padding-top: 9px;
   }
+  .share-hashtags {
+    font-size: clamp(7.5px, 2cqmin, 13px);
+    color: rgba(255,255,255,0.38);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
 
   /* Ranking- und Haushalts-Karte: Zeilenlisten statt Fließtext */
-  .share-list { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(3px, 1.6cqw, 9px); }
-  .share-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: clamp(6px, 2cqw, 12px); }
-  .sr-name { font-size: clamp(10px, 3.2cqw, 14px); font-weight: 800; display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .share-list { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(3px, 1.6cqmin, 14px); }
+  .share-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: clamp(6px, 2cqmin, 16px); }
+  .sr-name { font-size: clamp(10px, 3.2cqmin, 19px); font-weight: 800; display: flex; align-items: center; gap: 6px; min-width: 0; }
   .sr-name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .sr-dot { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
-  .sr-bar { height: clamp(5px, 1.6cqw, 9px); border-radius: 999px; background: rgba(255,255,255,0.12); overflow: hidden; }
+  .sr-bar { height: clamp(5px, 1.6cqmin, 13px); border-radius: 999px; background: rgba(255,255,255,0.12); overflow: hidden; }
   .sr-bar span { display: block; height: 100%; background: #34D399; }
-  .sr-num { font-size: clamp(10px, 3cqw, 14px); font-weight: 800; text-align: right; white-space: nowrap; }
+  .sr-num { font-size: clamp(10px, 3cqmin, 19px); font-weight: 800; text-align: right; white-space: nowrap; }
   .share-row.two-col { grid-template-columns: 1fr auto; }
+  /* Kleine Kachel: nur Top-4 zeigen, volle Liste erst ab genug Höhe (Story-Kachel, Vollbild-Modal) */
+  .share-list .share-row:nth-child(n+5) { display: none; }
+  @container (min-height: 300px) {
+    .share-list .share-row:nth-child(n+5) { display: grid; }
+  }
 
   .share-modal {
     position: fixed;

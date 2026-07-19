@@ -137,17 +137,26 @@
     return new DOMParser().parseFromString(text, 'text/html');
   }
 
-  function factCard({ accent, dotColor, kicker, headline, body, badge, footRight }) {
+  function brandRow() {
+    return h('div', { class: 'share-brand' }, [h('span', {}, '⚖️'), h('span', {}, 'PARTEIENCHECK.ORG')]);
+  }
+
+  function factCard({ accent, dotColor, kicker, headline, topLabel, topText, bottomLabel, bottomText, badge, footRight, hashtags }) {
     return h('div', { class: 'share-card', style: '--accent:' + accent }, [
+      brandRow(),
       h('div', { class: 'share-kicker' }, [h('span', { class: 'dot', style: 'background:' + dotColor }), kicker]),
       h('div', { class: 'share-headline' }, headline),
-      h('div', { class: 'share-body' }, body),
+      h('div', { class: 'share-quotes' }, [
+        h('div', { class: 'share-qblock top' }, [h('div', { class: 'share-qlabel' }, topLabel), h('div', { class: 'share-qtext' }, topText)]),
+        h('div', { class: 'share-qblock result' }, [h('div', { class: 'share-qlabel' }, bottomLabel), h('div', { class: 'share-qtext' }, bottomText)])
+      ]),
       h('div', { class: 'share-badge' }, badge),
-      h('div', { class: 'share-foot' }, [h('span', {}, 'parteiencheck.org'), h('span', {}, footRight)])
+      h('div', { class: 'share-foot' }, [h('span', {}, 'parteiencheck.org'), h('span', {}, footRight)]),
+      h('div', { class: 'share-hashtags' }, hashtags)
     ]);
   }
 
-  function listCard({ accent, dotColor, kicker, headline, rows, footRight }) {
+  function listCard({ accent, dotColor, kicker, headline, rows, footRight, hashtags }) {
     const list = h('div', { class: 'share-list' }, rows.map(r => {
       const hasBar = r.pct != null;
       const children = [h('span', { class: 'sr-name' }, [h('span', { class: 'sr-dot', style: 'background:' + r.color }), h('span', { class: 'sr-name-text' }, r.name)])];
@@ -156,10 +165,12 @@
       return h('div', { class: 'share-row' + (hasBar ? '' : ' two-col') }, children);
     }));
     return h('div', { class: 'share-card', style: '--accent:' + accent }, [
+      brandRow(),
       h('div', { class: 'share-kicker' }, [h('span', { class: 'dot', style: 'background:' + dotColor }), kicker]),
       h('div', { class: 'share-headline' }, headline),
       list,
-      h('div', { class: 'share-foot' }, [h('span', {}, 'parteiencheck.org'), h('span', {}, footRight)])
+      h('div', { class: 'share-foot' }, [h('span', {}, 'parteiencheck.org'), h('span', {}, footRight)]),
+      h('div', { class: 'share-hashtags' }, hashtags)
     ]);
   }
 
@@ -178,16 +189,22 @@
     return rows;
   }
 
+  const MEDALS = ['🥇', '🥈', '🥉'];
+  function hashtag(name) { return '#' + name.replace(/[^\p{L}\p{N}]/gu, ''); }
+
   function buildRankCard(doc) {
-    const rows = computeRanking(doc).map(r => ({
-      color: r.color, name: r.name, pct: r.pct, value: r.pct + '% (' + r.done + '/' + r.all + ')'
+    const rows = computeRanking(doc).map((r, idx) => ({
+      color: r.color,
+      name: (idx < 3 ? MEDALS[idx] + ' ' : (idx + 1) + '. ') + r.name,
+      pct: r.pct, value: r.pct + '% (' + r.done + '/' + r.all + ')'
     }));
     return listCard({
       accent: NEUTRAL_ACCENT, dotColor: NEUTRAL_ACCENT,
       kicker: 'Wahlversprechen-Check · live berechnet',
       headline: 'Wer hält, was er verspricht?',
       rows,
-      footRight: 'Quelle: bundestag.de'
+      footRight: 'Quelle: bundestag.de',
+      hashtags: '#Parteiencheck #Bundestagswahl #Wahlversprechen'
     });
   }
 
@@ -198,6 +215,7 @@
       const meta = PARTY_META[partyId] || { name: '', color: '#888' };
       const topic = clean(node.querySelector('.promise-topic') && node.querySelector('.promise-topic').textContent);
       const title = clean(node.querySelector('.promise-title') && node.querySelector('.promise-title').textContent);
+      const promiseText = (node.querySelector('.promise-text') && node.querySelector('.promise-text').textContent) || '';
       const resultText = (node.querySelector('.promise-result') && node.querySelector('.promise-result').textContent) || '';
       const badgeText = clean(node.querySelector('.status-badge') && node.querySelector('.status-badge').textContent);
       const status = node.dataset.status;
@@ -206,9 +224,13 @@
         dotColor: meta.color,
         kicker: meta.name + ' · ' + topic,
         headline: title,
-        body: excerpt(stripLeadLabel(resultText), 130),
+        topLabel: 'Versprochen',
+        topText: excerpt(stripLeadLabel(promiseText), 100),
+        bottomLabel: 'Check-Ergebnis',
+        bottomText: excerpt(stripLeadLabel(resultText), 100),
         badge: badgeText,
-        footRight: 'Wahlversprechen-Check'
+        footRight: 'Wahlversprechen-Check',
+        hashtags: '#Parteiencheck #Wahlversprechen ' + hashtag(meta.name)
       });
     });
   }
@@ -217,6 +239,7 @@
     return [...doc.querySelectorAll('.promise-card[data-share="1"]')].map(node => {
       const topic = clean(node.querySelector('.promise-topic') && node.querySelector('.promise-topic').textContent);
       const title = clean(node.querySelector('.promise-title') && node.querySelector('.promise-title').textContent);
+      const promiseText = (node.querySelector('.promise-text') && node.querySelector('.promise-text').textContent) || '';
       const resultText = (node.querySelector('.promise-result') && node.querySelector('.promise-result').textContent) || '';
       const badgeText = clean(node.querySelector('.status-badge') && node.querySelector('.status-badge').textContent);
       const accent = STATUS_ACCENT[node.dataset.status] || STATUS_ACCENT.promised;
@@ -224,9 +247,13 @@
         accent, dotColor: accent,
         kicker: topic,
         headline: title,
-        body: excerpt(stripLeadLabel(resultText), 130),
+        topLabel: 'Hintergrund',
+        topText: excerpt(clean(promiseText), 100),
+        bottomLabel: 'Ergebnis',
+        bottomText: excerpt(stripLeadLabel(resultText), 100),
         badge: badgeText,
-        footRight: 'Steuergeld-Check'
+        footRight: 'Steuergeld-Check',
+        hashtags: '#Parteiencheck #Steuergeld #Bundeshaushalt'
       });
     });
   }
@@ -246,7 +273,8 @@
     return listCard({
       accent: NEUTRAL_ACCENT, dotColor: NEUTRAL_ACCENT,
       kicker, headline, rows,
-      footRight: 'Quelle: bundeshaushalt.de'
+      footRight: 'Quelle: bundeshaushalt.de',
+      hashtags: '#Parteiencheck #Bundeshaushalt #Steuergeld'
     });
   }
 
