@@ -34,7 +34,7 @@ Keine Medien/Zeitungen/Blogs. Bewertungen = Prüfergebnisse, keine Meinung.
   „Stand gesichert — Chat kann weg". (Chat-Löschen macht der Nutzer selbst / `/clear`.)
 
 ## Offener Stand (bei Sessionstart prüfen)
-- Nichts offen. Zuletzt live gemergt: Vergleichsblock (Prozent-Balken je Partei), CLAUDE.md.
+- Nichts offen. Zuletzt live: Vergleichsblock, Methodik-Hinweis einklappbar (eingeklappt), CLAUDE.md-Präferenzen.
 - Optional-Idee noch offen: Kategorie/Hinweis für Oppositions-Erfolge
   (z. B. erfolgreiche Verfassungsklage der Union) — nur auf Wunsch umsetzen.
 - Aktuellen Stand mit `list_pull_requests` / offenem PR prüfen, nicht den Chat durchsuchen.
