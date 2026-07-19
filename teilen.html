@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zum Teilen — Parteiencheck in Karten für Social Media</title>
+<meta name="description" content="Die wichtigsten Ergebnisse aus dem Wahlversprechen- und Steuergeld-Check als fertige Karten für Instagram, Story & Co. — direkt screenshotbar, live aus den Original-Quellen berechnet.">
+<meta name="theme-color" content="#FFFFFF">
+<meta property="og:title" content="Parteiencheck zum Teilen — fertige Karten für Story & Post">
+<meta property="og:description" content="Wahlversprechen und Steuergeld-Fakten als screenshotbare Social-Media-Karten — belegt mit offiziellen Quellen.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.parteiencheck.org/teilen.html">
+<meta property="og:locale" content="de_DE">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="fmt-story">
+
+<header>
+  <div class="header-inner">
+    <nav class="site-nav" aria-label="Seiten">
+      <a href="index.html" class="site-tab">🗳️ Wahlversprechen</a>
+      <a href="steuergelder.html" class="site-tab">💶 Steuergeld-Check</a>
+      <a href="teilen.html" class="site-tab active" aria-current="page">📱 Zum Teilen</a>
+    </nav>
+    <div class="header-label">Politische Transparenz · Deutschland</div>
+    <h1>Die Fakten <span>zum Teilen</span></h1>
+    <p class="header-sub">Die wichtigsten Ergebnisse aus beiden Checks als fertige Karten — jede Zahl live aus den Original-Karten berechnet, nichts hier ist separat gepflegt. Karte antippen, Bildschirm füllt sich, screenshotten, direkt als Story oder Post teilen.</p>
+    <div class="source-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Gleiche Quellen wie auf den Hauptseiten: bundestag.de · bundesregierung.de · bundesrechnungshof.de · Wahlprogramme
+    </div>
+  </div>
+</header>
+
+<div class="toolbar share-toolbar">
+  <div class="header-inner" style="padding:0; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; max-width:1200px; margin:0 auto; width:100%;">
+    <div class="format-toggle" role="group" aria-label="Format wählen">
+      <button class="format-btn active" data-fmt="story">📱 Story (9:16)</button>
+      <button class="format-btn" data-fmt="post">🖼️ Post (1:1)</button>
+    </div>
+    <span class="share-hint">Tipp: Karte antippen → Vollbild → Screenshot</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="content-area">
+
+    <p class="share-intro">Alle Karten unten werden beim Laden dieser Seite live aus den Karten von <strong>Wahlversprechen-Check</strong> und <strong>Steuergeld-Check</strong> berechnet — es gibt keine doppelt gepflegten Zahlen. Ändert sich dort ein Eintrag, ändert sich die Karte hier automatisch mit.</p>
+
+    <div class="section-title">🏆 Ranking — wer hält, was er verspricht?</div>
+    <div class="share-grid" id="grid-rank"></div>
+
+    <div class="section-title">📋 Einzelne Wahlversprechen</div>
+    <div class="share-grid" id="grid-promises"></div>
+
+    <div class="section-title">💶 Steuergeld-Highlights</div>
+    <div class="share-grid" id="grid-tax"></div>
+
+    <div class="section-title">📊 Haushalts-Überblick</div>
+    <div class="share-grid" id="grid-budget"></div>
+
+  </div>
+</div>
+
+<div class="share-modal hidden" id="shareModal">
+  <button class="share-modal-close" id="shareModalClose" aria-label="Schließen">✕</button>
+  <div class="share-modal-stage" id="shareModalStage"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <h3>Fehler gefunden? Quelle ergänzen?</h3>
+    <p>Diese Karten übernehmen automatisch die Einträge von Wahlversprechen-Check und Steuergeld-Check. Korrekturen dort wirken sich auch hier aus. Jeder Eintrag muss durch einen direkten Link auf eine offizielle Quelle belegt sein.</p>
+    <p class="footer-note">Quellen: Offizielle Parteiwebseiten · bundestag.de · bundesregierung.de · bundesrechnungshof.de · bundeshaushalt.de</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const PARTIES = ['spd', 'cdu', 'gruene', 'fdp', 'afd', 'bsw', 'linke', 'ssw'];
+  const PARTY_META = {
+    spd:    { name: 'SPD', color: '#E3000F' },
+    cdu:    { name: 'CDU/CSU', color: '#000000' },
+    gruene: { name: 'Grüne', color: '#1AA037' },
+    fdp:    { name: 'FDP', color: '#FFED00' },
+    afd:    { name: 'AfD', color: '#009EE0' },
+    bsw:    { name: 'BSW', color: '#7B2D8B' },
+    linke:  { name: 'Die Linke', color: '#BE3075' },
+    ssw:    { name: 'SSW', color: '#003C8F' }
+  };
+  const STATUS_ACCENT = { done: '#34D399', progress: '#FBBF24', failed: '#F87171', promised: '#A1A1AA' };
+  const NEUTRAL_ACCENT = '#FFFFFF';
+
+  // Kleiner Hyperscript-Helfer: baut DOM-Knoten ohne innerHTML, damit
+  // Karteninhalte (aus den Original-Seiten übernommener Text) nicht als
+  // HTML interpretiert werden.
+  function h(tag, attrs, children) {
+    const e = document.createElement(tag);
+    attrs = attrs || {};
+    for (const k in attrs) {
+      if (k === 'class') e.className = attrs[k];
+      else if (k === 'style') e.setAttribute('style', attrs[k]);
+      else e.setAttribute(k, attrs[k]);
+    }
+    (Array.isArray(children) ? children : children != null ? [children] : []).forEach(c => {
+      if (c == null) return;
+      e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return e;
+  }
+
+  function clean(text) { return (text || '').replace(/\s+/g, ' ').trim(); }
+
+  function stripLeadLabel(text) {
+    // Führendes Emoji weg (steht schon im Badge) + Label vor dem Doppelpunkt,
+    // damit der Kartentext nicht "✅ Umgesetzt: Umgesetzt: ..." doppelt zeigt.
+    const c = clean(text).replace(/^\p{Extended_Pictographic}️?\s*/u, '');
+    const idx = c.indexOf(':');
+    return (idx > -1 && idx < 40) ? c.slice(idx + 1).trim() : c;
+  }
+
+  // Kürzt auf ein Wortende statt auf einen Satz — Punkte in Zahlen/Daten
+  // („3. Juni 2022", „10 Mrd.") sind sonst nicht von echten Satzenden zu
+  // unterscheiden.
+  function excerpt(text, maxLen) {
+    const c = clean(text);
+    if (c.length <= maxLen) return c;
+    const cut = c.slice(0, maxLen).replace(/\s+\S*$/, '').replace(/[,;:—-]+$/, '');
+    return cut.trim() + '…';
+  }
+
+  async function loadDoc(url) {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('fetch failed: ' + url);
+    const text = await res.text();
+    return new DOMParser().parseFromString(text, 'text/html');
+  }
+
+  function factCard({ accent, dotColor, kicker, headline, body, badge, footRight }) {
+    return h('div', { class: 'share-card', style: '--accent:' + accent }, [
+      h('div', { class: 'share-kicker' }, [h('span', { class: 'dot', style: 'background:' + dotColor }), kicker]),
+      h('div', { class: 'share-headline' }, headline),
+      h('div', { class: 'share-body' }, body),
+      h('div', { class: 'share-badge' }, badge),
+      h('div', { class: 'share-foot' }, [h('span', {}, 'parteiencheck.org'), h('span', {}, footRight)])
+    ]);
+  }
+
+  function listCard({ accent, dotColor, kicker, headline, rows, footRight }) {
+    const list = h('div', { class: 'share-list' }, rows.map(r => {
+      const hasBar = r.pct != null;
+      const children = [h('span', { class: 'sr-name' }, [h('span', { class: 'sr-dot', style: 'background:' + r.color }), h('span', { class: 'sr-name-text' }, r.name)])];
+      if (hasBar) children.push(h('span', { class: 'sr-bar' }, [h('span', { style: 'width:' + r.pct + '%' })]));
+      children.push(h('span', { class: 'sr-num' }, r.value));
+      return h('div', { class: 'share-row' + (hasBar ? '' : ' two-col') }, children);
+    }));
+    return h('div', { class: 'share-card', style: '--accent:' + accent }, [
+      h('div', { class: 'share-kicker' }, [h('span', { class: 'dot', style: 'background:' + dotColor }), kicker]),
+      h('div', { class: 'share-headline' }, headline),
+      list,
+      h('div', { class: 'share-foot' }, [h('span', {}, 'parteiencheck.org'), h('span', {}, footRight)])
+    ]);
+  }
+
+  function computeRanking(doc) {
+    const rows = [];
+    PARTIES.forEach(id => {
+      const panel = doc.getElementById('panel-' + id);
+      if (!panel) return;
+      const cards = panel.querySelectorAll('.promise-card[data-status]');
+      let done = 0, all = 0;
+      cards.forEach(c => { all++; if (c.dataset.status === 'done') done++; });
+      const pct = all ? Math.round((done / all) * 100) : 0;
+      rows.push({ id, name: PARTY_META[id].name, color: PARTY_META[id].color, done, all, pct });
+    });
+    rows.sort((a, b) => (b.pct - a.pct) || (b.done - a.done));
+    return rows;
+  }
+
+  function buildRankCard(doc) {
+    const rows = computeRanking(doc).map(r => ({
+      color: r.color, name: r.name, pct: r.pct, value: r.pct + '% (' + r.done + '/' + r.all + ')'
+    }));
+    return listCard({
+      accent: NEUTRAL_ACCENT, dotColor: NEUTRAL_ACCENT,
+      kicker: 'Wahlversprechen-Check · live berechnet',
+      headline: 'Wer hält, was er verspricht?',
+      rows,
+      footRight: 'Quelle: bundestag.de'
+    });
+  }
+
+  function buildPromiseCards(doc) {
+    return [...doc.querySelectorAll('.promise-card[data-share="1"]')].map(node => {
+      const panel = node.closest('.party-panel');
+      const partyId = panel ? panel.id.replace('panel-', '') : null;
+      const meta = PARTY_META[partyId] || { name: '', color: '#888' };
+      const topic = clean(node.querySelector('.promise-topic') && node.querySelector('.promise-topic').textContent);
+      const title = clean(node.querySelector('.promise-title') && node.querySelector('.promise-title').textContent);
+      const resultText = (node.querySelector('.promise-result') && node.querySelector('.promise-result').textContent) || '';
+      const badgeText = clean(node.querySelector('.status-badge') && node.querySelector('.status-badge').textContent);
+      const status = node.dataset.status;
+      return factCard({
+        accent: STATUS_ACCENT[status] || STATUS_ACCENT.promised,
+        dotColor: meta.color,
+        kicker: meta.name + ' · ' + topic,
+        headline: title,
+        body: excerpt(stripLeadLabel(resultText), 130),
+        badge: badgeText,
+        footRight: 'Wahlversprechen-Check'
+      });
+    });
+  }
+
+  function buildTaxCards(doc) {
+    return [...doc.querySelectorAll('.promise-card[data-share="1"]')].map(node => {
+      const topic = clean(node.querySelector('.promise-topic') && node.querySelector('.promise-topic').textContent);
+      const title = clean(node.querySelector('.promise-title') && node.querySelector('.promise-title').textContent);
+      const resultText = (node.querySelector('.promise-result') && node.querySelector('.promise-result').textContent) || '';
+      const badgeText = clean(node.querySelector('.status-badge') && node.querySelector('.status-badge').textContent);
+      const accent = STATUS_ACCENT[node.dataset.status] || STATUS_ACCENT.promised;
+      return factCard({
+        accent, dotColor: accent,
+        kicker: topic,
+        headline: title,
+        body: excerpt(stripLeadLabel(resultText), 130),
+        badge: badgeText,
+        footRight: 'Steuergeld-Check'
+      });
+    });
+  }
+
+  function buildBudgetCard(doc) {
+    const budgetCard = doc.querySelector('#ueberblick .budget-card');
+    const kicker = clean(budgetCard && budgetCard.querySelector('.promise-topic') && budgetCard.querySelector('.promise-topic').textContent) || 'Bundeshaushalt';
+    const headline = clean(budgetCard && budgetCard.querySelector('.promise-title') && budgetCard.querySelector('.promise-title').textContent) || 'So verteilt sich der Bundeshaushalt';
+    const lis = budgetCard ? [...budgetCard.querySelectorAll('.budget-legend li')].slice(0, 6) : [];
+    const rows = lis.map(li => {
+      const dot = li.querySelector('.b-dot');
+      const color = (dot && dot.style.backgroundColor) || '#888';
+      const text = li.textContent.replace(/↓\s*$/, '').trim();
+      const parts = text.split(' — ');
+      return { color, name: (parts[0] || '').trim(), value: parts.slice(1).join(' — ').trim() };
+    });
+    return listCard({
+      accent: NEUTRAL_ACCENT, dotColor: NEUTRAL_ACCENT,
+      kicker, headline, rows,
+      footRight: 'Quelle: bundeshaushalt.de'
+    });
+  }
+
+  function showError(grid, msg) {
+    grid.appendChild(h('div', { class: 'empty-state' }, msg));
+  }
+
+  function wrap(card) {
+    const w = h('div', { class: 'share-card-wrap' }, [card]);
+    w.addEventListener('click', () => openModal(card));
+    return w;
+  }
+
+  const modal = document.getElementById('shareModal');
+  const modalStage = document.getElementById('shareModalStage');
+  function openModal(card) {
+    modalStage.innerHTML = '';
+    modalStage.appendChild(card.cloneNode(true));
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.add('hidden');
+    modalStage.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('shareModalClose').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  document.querySelectorAll('.format-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.format-btn').forEach(b => b.classList.toggle('active', b === btn));
+      document.body.classList.toggle('fmt-story', btn.dataset.fmt === 'story');
+      document.body.classList.toggle('fmt-post', btn.dataset.fmt === 'post');
+    });
+  });
+
+  const FETCH_FAIL_MSG = 'Live-Daten konnten nicht geladen werden — bitte über einen Webserver öffnen (lokal z. B. python3 -m http.server, oder live auf parteiencheck.org).';
+
+  const gridRank = document.getElementById('grid-rank');
+  const gridPromises = document.getElementById('grid-promises');
+  const gridTax = document.getElementById('grid-tax');
+  const gridBudget = document.getElementById('grid-budget');
+
+  loadDoc('index.html').then(doc => {
+    gridRank.appendChild(wrap(buildRankCard(doc)));
+    buildPromiseCards(doc).forEach(c => gridPromises.appendChild(wrap(c)));
+  }).catch(() => {
+    showError(gridRank, FETCH_FAIL_MSG);
+    showError(gridPromises, FETCH_FAIL_MSG);
+  });
+
+  loadDoc('steuergelder.html').then(doc => {
+    buildTaxCards(doc).forEach(c => gridTax.appendChild(wrap(c)));
+    gridBudget.appendChild(wrap(buildBudgetCard(doc)));
+  }).catch(() => {
+    showError(gridTax, FETCH_FAIL_MSG);
+    showError(gridBudget, FETCH_FAIL_MSG);
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -6,8 +6,10 @@ Domain: www.parteiencheck.org (bei Netlify als Primary). Betreiber: viumqq.
 ## Dateien
 - `index.html` — Wahlversprechen-Check (8 Parteien, ~100 Karten). Vergleichsblock oben.
 - `steuergelder.html` — Steuergeld-Check (27 Karten, 6 Themen, Haushalts-Balken).
-- `style.css` — gemeinsames CSS beider Seiten.
-- Seitenmenü oben verbindet beide Seiten.
+- `teilen.html` — Zum Teilen: screenshotbare Social-Media-Karten (Post 1:1 / Story 9:16),
+  Inhalte per `fetch()` live aus index.html/steuergelder.html gezogen, keine eigenen Daten.
+- `style.css` — gemeinsames CSS aller drei Seiten.
+- Seitenmenü oben verbindet alle drei Seiten.
 
 ## Design
 Schwarz-Weiß-Dashboard, Parteifarben nur als Akzent, Ampelfarben für Status. Nur Inter-Font,
@@ -34,7 +36,12 @@ Keine Medien/Zeitungen/Blogs. Bewertungen = Prüfergebnisse, keine Meinung.
   „Stand gesichert — Chat kann weg". (Chat-Löschen macht der Nutzer selbst / `/clear`.)
 
 ## Offener Stand (bei Sessionstart prüfen)
-- Nichts offen. Zuletzt live: Vergleichsblock, Methodik-Hinweis einklappbar (eingeklappt), CLAUDE.md-Präferenzen.
+- Nichts offen. Zuletzt live: Vergleichsblock, Methodik-Hinweis einklappbar (eingeklappt),
+  CLAUDE.md-Präferenzen, lokale Git-Neuanbindung des Mac-Ordners (2026-07-19).
+- Lokaler Shortcut eingerichtet: Funktion `parteiencheck` in `~/.zshrc` (cd + `claude` Start).
+- Dritte Seite `teilen.html` ("📱 Zum Teilen") live: screenshotbare Social-Media-Karten
+  (Post 1:1 / Story 9:16) mit Live-Daten aus `index.html`/`steuergelder.html` (per `fetch()` +
+  `data-share="1"`-Markierung auf den Original-Karten, keine doppelt gepflegten Inhalte).
 - Optional-Idee noch offen: Kategorie/Hinweis für Oppositions-Erfolge
   (z. B. erfolgreiche Verfassungsklage der Union) — nur auf Wunsch umsetzen.
-- Aktuellen Stand mit `list_pull_requests` / offenem PR prüfen, nicht den Chat durchsuchen.
+- Aktuellen Stand mit `gh pr list` / offenem PR prüfen, nicht den Chat durchsuchen.
