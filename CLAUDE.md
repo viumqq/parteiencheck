@@ -6,8 +6,10 @@ Domain: www.parteiencheck.org (bei Netlify als Primary). Betreiber: viumqq.
 ## Dateien
 - `index.html` — Wahlversprechen-Check (8 Parteien, ~100 Karten). Vergleichsblock oben.
 - `steuergelder.html` — Steuergeld-Check (27 Karten, 6 Themen, Haushalts-Balken).
-- `style.css` — gemeinsames CSS beider Seiten.
-- Seitenmenü oben verbindet beide Seiten.
+- `teilen.html` — Zum Teilen: screenshotbare Social-Media-Karten (Post 1:1 / Story 9:16),
+  Inhalte per `fetch()` live aus index.html/steuergelder.html gezogen, keine eigenen Daten.
+- `style.css` — gemeinsames CSS aller drei Seiten.
+- Seitenmenü oben verbindet alle drei Seiten.
 
 ## Design
 Schwarz-Weiß-Dashboard, Parteifarben nur als Akzent, Ampelfarben für Status. Nur Inter-Font,
@@ -34,17 +36,12 @@ Keine Medien/Zeitungen/Blogs. Bewertungen = Prüfergebnisse, keine Meinung.
   „Stand gesichert — Chat kann weg". (Chat-Löschen macht der Nutzer selbst / `/clear`.)
 
 ## Offener Stand (bei Sessionstart prüfen)
-- 2026-07-19: lokaler Mac-Ordner (~/Desktop/Parteiencheck) neu an dieses Repo angebunden
-  (`git init` + `remote add origin` + `checkout main`), war vorher kein Git-Repo und hatte
-  einen veralteten Stand. Alte lokale Dateien liegen zur Sicherheit in `_local_backup_2026-07-19/`
-  (untracked, kann später gelöscht werden).
+- Nichts offen. Zuletzt live: Vergleichsblock, Methodik-Hinweis einklappbar (eingeklappt),
+  CLAUDE.md-Präferenzen, lokale Git-Neuanbindung des Mac-Ordners (2026-07-19).
 - Lokaler Shortcut eingerichtet: Funktion `parteiencheck` in `~/.zshrc` (cd + `claude` Start).
-- Lokales session-lock-Hook-System (Mac-only, nicht in Git) wurde entfernt — dieses CLAUDE.md
-  ist die einzige Stand-Quelle, wie bisher schon hier dokumentiert.
-- 2026-07-19: Neue dritte Seite `teilen.html` ("📱 Zum Teilen") gebaut — screenshotbare
-  Social-Media-Karten (Post 1:1 / Story 9:16) mit Live-Daten aus `index.html` und
-  `steuergelder.html` (per `fetch()` + `data-share="1"`-Markierung auf den Original-Karten,
-  keine doppelt gepflegten Inhalte). PR steht aus, Freigabe über Netlify-Vorschau ausstehend.
+- Dritte Seite `teilen.html` ("📱 Zum Teilen") live: screenshotbare Social-Media-Karten
+  (Post 1:1 / Story 9:16) mit Live-Daten aus `index.html`/`steuergelder.html` (per `fetch()` +
+  `data-share="1"`-Markierung auf den Original-Karten, keine doppelt gepflegten Inhalte).
 - Optional-Idee noch offen: Kategorie/Hinweis für Oppositions-Erfolge
   (z. B. erfolgreiche Verfassungsklage der Union) — nur auf Wunsch umsetzen.
 - Aktuellen Stand mit `gh pr list` / offenem PR prüfen, nicht den Chat durchsuchen.
