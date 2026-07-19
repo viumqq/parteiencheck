@@ -28,6 +28,7 @@ Keine Medien/Zeitungen/Blogs. Bewertungen = Prüfergebnisse, keine Meinung.
 5. Lokaler Test: `python3 -m http.server 8080` + Playwright/Chromium unter /opt/pw-browsers/chromium.
 
 ## Nutzer-Präferenzen (wichtig)
+- Antworten immer so knapp wie möglich — nur das Nötige, keine unnötigen Erklärungen.
 - Token sparen: NICHT den Chatverlauf durchsuchen — diese Datei ist die Quelle für den Stand.
 - Bei „**merk dir den Stand**": Wichtigstes hier knapp festhalten, dann dem Nutzer sagen
   „Stand gesichert — Chat kann weg". (Chat-Löschen macht der Nutzer selbst / `/clear`.)
