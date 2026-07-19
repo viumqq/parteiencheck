@@ -22,12 +22,18 @@ Keine Medien/Zeitungen/Blogs. Bewertungen = Prüfergebnisse, keine Meinung.
 ## Arbeitsweise (Workflow)
 1. Entwicklung immer auf Branch `claude/docker-setup-workflow-9j55aj`.
 2. Commit + Push → Pull Request → Netlify Deploy Preview.
-3. Nutzer sieht Vorschau, gibt frei → PR mergen → live.
-4. Nutzer nie ohne Freigabe live schalten. Screenshots (Desktop+Mobil) vor Freigabe zeigen.
+3. Nutzer sieht Vorschau, gibt frei → PR mergen → live. Nie ohne Freigabe live schalten.
+4. **Keine Screenshots im Chat zeigen** — dem Nutzer genügt die Netlify-Vorschau.
+   (Playwright trotzdem intern zur Prüfung nutzen, nur nicht mit SendUserFile posten.)
 5. Lokaler Test: `python3 -m http.server 8080` + Playwright/Chromium unter /opt/pw-browsers/chromium.
 
+## Nutzer-Präferenzen (wichtig)
+- Token sparen: NICHT den Chatverlauf durchsuchen — diese Datei ist die Quelle für den Stand.
+- Bei „**merk dir den Stand**": Wichtigstes hier knapp festhalten, dann dem Nutzer sagen
+  „Stand gesichert — Chat kann weg". (Chat-Löschen macht der Nutzer selbst / `/clear`.)
+
 ## Offener Stand (bei Sessionstart prüfen)
-- PR #6 „Vergleichsblock" offen: zeigt je Partei den % umgesetzter Versprechen als Balken,
-  sortiert. Wartet auf Freigabe. Optionale Erweiterung noch offen: Hinweis/Kategorie für
-  Oppositions-Erfolge (z. B. erfolgreiche Verfassungsklage der Union).
-- Aktuellen Stand mit `list_pull_requests` / offener PR prüfen, nicht den Chat durchsuchen.
+- Nichts offen. Zuletzt live gemergt: Vergleichsblock (Prozent-Balken je Partei), CLAUDE.md.
+- Optional-Idee noch offen: Kategorie/Hinweis für Oppositions-Erfolge
+  (z. B. erfolgreiche Verfassungsklage der Union) — nur auf Wunsch umsetzen.
+- Aktuellen Stand mit `list_pull_requests` / offenem PR prüfen, nicht den Chat durchsuchen.
