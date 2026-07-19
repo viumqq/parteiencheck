@@ -34,7 +34,17 @@ Keine Medien/Zeitungen/Blogs. Bewertungen = Prüfergebnisse, keine Meinung.
   „Stand gesichert — Chat kann weg". (Chat-Löschen macht der Nutzer selbst / `/clear`.)
 
 ## Offener Stand (bei Sessionstart prüfen)
-- Nichts offen. Zuletzt live: Vergleichsblock, Methodik-Hinweis einklappbar (eingeklappt), CLAUDE.md-Präferenzen.
+- 2026-07-19: lokaler Mac-Ordner (~/Desktop/Parteiencheck) neu an dieses Repo angebunden
+  (`git init` + `remote add origin` + `checkout main`), war vorher kein Git-Repo und hatte
+  einen veralteten Stand. Alte lokale Dateien liegen zur Sicherheit in `_local_backup_2026-07-19/`
+  (untracked, kann später gelöscht werden).
+- Lokaler Shortcut eingerichtet: Funktion `parteiencheck` in `~/.zshrc` (cd + `claude` Start).
+- Lokales session-lock-Hook-System (Mac-only, nicht in Git) wurde entfernt — dieses CLAUDE.md
+  ist die einzige Stand-Quelle, wie bisher schon hier dokumentiert.
+- 2026-07-19: Neue dritte Seite `teilen.html` ("📱 Zum Teilen") gebaut — screenshotbare
+  Social-Media-Karten (Post 1:1 / Story 9:16) mit Live-Daten aus `index.html` und
+  `steuergelder.html` (per `fetch()` + `data-share="1"`-Markierung auf den Original-Karten,
+  keine doppelt gepflegten Inhalte). PR steht aus, Freigabe über Netlify-Vorschau ausstehend.
 - Optional-Idee noch offen: Kategorie/Hinweis für Oppositions-Erfolge
   (z. B. erfolgreiche Verfassungsklage der Union) — nur auf Wunsch umsetzen.
-- Aktuellen Stand mit `list_pull_requests` / offenem PR prüfen, nicht den Chat durchsuchen.
+- Aktuellen Stand mit `gh pr list` / offenem PR prüfen, nicht den Chat durchsuchen.
