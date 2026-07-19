@@ -499,3 +499,10 @@
     .compare-row { grid-template-columns: 92px 1fr; }
     .cr-nums { grid-column: 2; justify-self: end; }
   }
+
+  /* Methodik-Hinweis einklappbar */
+  details.disclaimer > summary { cursor: pointer; list-style: none; font-weight: 600; color: var(--ink); }
+  details.disclaimer > summary::-webkit-details-marker { display: none; }
+  details.disclaimer > summary::before { content: "▸ "; color: var(--ink-3); }
+  details.disclaimer[open] > summary::before { content: "▾ "; }
+  details.disclaimer > summary span, details.disclaimer > span { display: block; margin-top: 10px; }
