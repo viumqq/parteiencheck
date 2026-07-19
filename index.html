@@ -11,6 +11,8 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.parteiencheck.org/">
 <meta property="og:locale" content="de_DE">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -1646,10 +1648,10 @@
   const smooth = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
   function counts(panel) {
-    const c = { all: 0 };
-    STATUSES.forEach(s => {
-      c[s] = panel.querySelectorAll('.promise-card[data-status="' + s + '"]').length;
-      c.all += c[s];
+    const c = { all: 0, done: 0, progress: 0, failed: 0, promised: 0 };
+    panel.querySelectorAll('.promise-card').forEach(card => {
+      const s = card.dataset.status;
+      if (c[s] !== undefined) { c[s]++; c.all++; }
     });
     return c;
   }
@@ -1669,10 +1671,12 @@
   // Statistikzahlen aus den echten Karten berechnen, Fortschrittsbalken und
   // Status-Hinweise für reine Versprechen einfügen
   function initStats() {
+    const countsByParty = {};
     PARTIES.forEach(id => {
       const panel = document.getElementById('panel-' + id);
       if (!panel) return;
       const c = counts(panel);
+      countsByParty[id] = c;
       STATUSES.forEach(s => {
         const el = panel.querySelector('.stat-num.' + s);
         if (el) el.textContent = c[s];
@@ -1701,7 +1705,7 @@
         if (src) col.insertBefore(note, src); else if (col) col.appendChild(note);
       });
     });
-    buildCompare();
+    buildCompare(countsByParty);
 
     const hint = document.createElement('div');
     hint.className = 'empty-state no-selection hidden';
@@ -1722,14 +1726,14 @@
   };
 
   // Vergleichsblock: Anteil umgesetzter Versprechen je Partei
-  function buildCompare() {
+  function buildCompare(countsByParty) {
     const box = document.getElementById('vergleich');
     if (!box) return;
     const data = [];
     PARTIES.forEach(id => {
       const panel = document.getElementById('panel-' + id);
       if (!panel) return;
-      const c = counts(panel);
+      const c = (countsByParty && countsByParty[id]) || counts(panel);
       data.push({ id, ...PARTY_META[id], ...c, pct: c.all ? Math.round((c.done / c.all) * 100) : 0 });
     });
     data.sort((a, b) => (b.pct - a.pct) || (b.done - a.done));

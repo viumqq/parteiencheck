@@ -11,6 +11,8 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.parteiencheck.org/teilen.html">
 <meta property="og:locale" content="de_DE">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -131,7 +133,10 @@
   }
 
   async function loadDoc(url) {
-    const res = await fetch(url, { cache: 'no-store' });
+    // 'no-cache' statt 'no-store': prüft bei jedem Laden auf Änderungen (bleibt
+    // live), erlaubt dem Browser aber einen 304-Treffer statt vollem Re-Download,
+    // wenn sich die Quellseite nicht geändert hat.
+    const res = await fetch(url, { cache: 'no-cache' });
     if (!res.ok) throw new Error('fetch failed: ' + url);
     const text = await res.text();
     return new DOMParser().parseFromString(text, 'text/html');
