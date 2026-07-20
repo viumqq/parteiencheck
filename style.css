@@ -151,8 +151,7 @@
   /* PARTEI-DASHBOARD-KOPF */
   .party-header {
     background: var(--bg);
-    border: 1px solid var(--line);
-    border-top: 4px solid var(--party-color);
+    border: 2px solid var(--party-color);
     border-radius: var(--radius);
     padding: 20px 22px;
     margin-bottom: 8px;
@@ -183,13 +182,19 @@
   .stat-num.failed { color: var(--st-failed); }
   .stat-num.promised { color: var(--ink); }
 
+  .progress-track-label {
+    margin-top: 16px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-3);
+  }
   .progress-track {
     display: flex;
     height: 8px;
     border-radius: 999px;
     overflow: hidden;
     background: var(--tile);
-    margin-top: 16px;
   }
   .progress-track span { display: block; }
   .seg-done { background: var(--st-done); }

@@ -98,7 +98,7 @@
 
     <!-- SPD PANEL -->
     <div class="party-panel active" id="panel-spd" style="--party-color:#E3000F">
-      <div class="party-header" style="border-left-color:#E3000F">
+      <div class="party-header">
         <div class="party-header-top">
           <div>
             <div class="party-full-name">Sozialdemokratische Partei Deutschlands</div>
@@ -337,7 +337,7 @@
 
     <!-- CDU/CSU PANEL -->
     <div class="party-panel" id="panel-cdu" style="--party-color:#000000">
-      <div class="party-header" style="border-left-color:#000000">
+      <div class="party-header">
         <div class="party-header-top">
           <div>
             <div class="party-full-name">CDU/CSU — Christlich Demokratische Union / Soziale Union</div>
@@ -588,7 +588,7 @@
 
     <!-- GRÜNE PANEL -->
     <div class="party-panel" id="panel-gruene" style="--party-color:#1AA037">
-      <div class="party-header" style="border-left-color:#1AA037">
+      <div class="party-header">
         <div class="party-header-top">
           <div>
             <div class="party-full-name">Bündnis 90/Die Grünen</div>
@@ -825,7 +825,7 @@
 
     <!-- FDP PANEL -->
     <div class="party-panel" id="panel-fdp" style="--party-color:#CCBB00">
-      <div class="party-header" style="border-left-color:#CCBB00">
+      <div class="party-header">
         <div class="party-header-top">
           <div>
             <div class="party-full-name">Freie Demokratische Partei</div>
@@ -988,7 +988,7 @@
 
     <!-- AFD PANEL -->
     <div class="party-panel" id="panel-afd" style="--party-color:#009EE0">
-      <div class="party-header" style="border-left-color:#009EE0">
+      <div class="party-header">
         <div class="party-header-top">
           <div>
             <div class="party-full-name">Alternative für Deutschland</div>
@@ -1211,7 +1211,7 @@
 
     <!-- BSW PANEL -->
     <div class="party-panel" id="panel-bsw" style="--party-color:#7B2D8B">
-      <div class="party-header" style="border-left-color:#7B2D8B">
+      <div class="party-header">
         <div class="party-header-top">
           <div>
             <div class="party-full-name">Bündnis Sahra Wagenknecht</div>
@@ -1413,7 +1413,7 @@
 
     <!-- LINKE PANEL -->
     <div class="party-panel" id="panel-linke" style="--party-color:#BE3075">
-      <div class="party-header" style="border-left-color:#BE3075">
+      <div class="party-header">
         <div class="party-header-top">
           <div>
             <div class="party-full-name">Die Linke</div>
@@ -1584,7 +1584,7 @@
 
     <!-- SSW PANEL -->
     <div class="party-panel" id="panel-ssw" style="--party-color:#003C8F">
-      <div class="party-header" style="border-left-color:#003C8F">
+      <div class="party-header">
         <div class="party-header-top">
           <div>
             <div class="party-full-name">Südschleswigscher Wählerverband</div>
@@ -1706,6 +1706,11 @@
       });
       const header = panel.querySelector('.party-header');
       if (header && c.all > 0) {
+        const label = document.createElement('div');
+        label.className = 'progress-track-label';
+        label.textContent = c.all + ' Aktivitäten insgesamt';
+        header.appendChild(label);
+
         const track = document.createElement('div');
         track.className = 'progress-track';
         track.setAttribute('aria-hidden', 'true');
