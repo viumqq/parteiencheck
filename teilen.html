@@ -166,8 +166,53 @@
     return h('div', { class: 'share-brand' }, [h('span', {}, 'PARTEIENCHECK.ORG')]);
   }
 
-  function factCard({ accent, dotColor, kicker, headline, topLabel, topText, bottomLabel, bottomText, badge, footRight, hashtags }) {
+  // Baut ein SVG-Element im richtigen Namespace (createElement reicht dafür nicht).
+  function svgEl(tag, attrs) {
+    const e = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  // Großes, dezentes Hintergrund-Icon je Karte — füllt die sonst leere
+  // Fläche der hochformatigen Story-Karte mit einer zum Status/Thema
+  // passenden Grafik (rein dekorativ, keine eigenen Inhalte/Zahlen).
+  const ICON_SHAPES = {
+    done: [
+      { tag: 'circle', attrs: { cx: 50, cy: 50, r: 42, 'stroke-width': 6 } },
+      { tag: 'path', attrs: { d: 'M32 52 L45 65 L71 34', 'stroke-width': 8 } }
+    ],
+    failed: [
+      { tag: 'circle', attrs: { cx: 50, cy: 50, r: 42, 'stroke-width': 6 } },
+      { tag: 'path', attrs: { d: 'M35 35 L65 65 M65 35 L35 65', 'stroke-width': 8 } }
+    ],
+    progress: [
+      { tag: 'circle', attrs: { cx: 50, cy: 50, r: 42, 'stroke-width': 6, 'stroke-dasharray': '140 400' } },
+      { tag: 'circle', attrs: { cx: 50, cy: 50, r: 7, fill: 'currentColor', stroke: 'none' } }
+    ],
+    promised: [
+      { tag: 'circle', attrs: { cx: 50, cy: 50, r: 42, 'stroke-width': 6 } },
+      { tag: 'circle', attrs: { cx: 50, cy: 50, r: 6, fill: 'currentColor', stroke: 'none' } }
+    ],
+    rank: [
+      { tag: 'rect', attrs: { x: 18, y: 54, width: 16, height: 32, rx: 4, fill: 'currentColor', stroke: 'none' } },
+      { tag: 'rect', attrs: { x: 42, y: 36, width: 16, height: 50, rx: 4, fill: 'currentColor', stroke: 'none' } },
+      { tag: 'rect', attrs: { x: 66, y: 16, width: 16, height: 70, rx: 4, fill: 'currentColor', stroke: 'none' } }
+    ],
+    budget: [
+      { tag: 'circle', attrs: { cx: 50, cy: 50, r: 40, 'stroke-width': 16 } }
+    ]
+  };
+
+  function iconWatermark(kind) {
+    const shapes = ICON_SHAPES[kind] || ICON_SHAPES.promised;
+    const svg = svgEl('svg', { viewBox: '0 0 100 100', class: 'share-icon-svg', 'aria-hidden': 'true', fill: 'none', stroke: 'currentColor', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+    shapes.forEach(s => svg.appendChild(svgEl(s.tag, s.attrs)));
+    return h('div', { class: 'share-icon-wrap' }, [svg]);
+  }
+
+  function factCard({ accent, dotColor, kicker, headline, topLabel, topText, bottomLabel, bottomText, badge, footRight, hashtags, icon }) {
     return h('div', { class: 'share-card', style: '--accent:' + accent }, [
+      iconWatermark(icon),
       brandRow(),
       h('div', { class: 'share-kicker' }, [h('span', { class: 'dot', style: 'background:' + dotColor }), kicker]),
       h('div', { class: 'share-headline' }, headline),
@@ -181,7 +226,7 @@
     ]);
   }
 
-  function listCard({ accent, dotColor, kicker, headline, rows, footRight, hashtags }) {
+  function listCard({ accent, dotColor, kicker, headline, rows, footRight, hashtags, icon }) {
     const list = h('div', { class: 'share-list' }, rows.map(r => {
       const hasBar = r.pct != null;
       const children = [h('span', { class: 'sr-name' }, [h('span', { class: 'sr-dot', style: 'background:' + r.color }), h('span', { class: 'sr-name-text' }, r.name)])];
@@ -190,6 +235,7 @@
       return h('div', { class: 'share-row' + (hasBar ? '' : ' two-col') }, children);
     }));
     return h('div', { class: 'share-card', style: '--accent:' + accent }, [
+      iconWatermark(icon),
       brandRow(),
       h('div', { class: 'share-kicker' }, [h('span', { class: 'dot', style: 'background:' + dotColor }), kicker]),
       h('div', { class: 'share-headline' }, headline),
@@ -229,7 +275,8 @@
       headline: 'Wer hält, was er verspricht?',
       rows,
       footRight: 'Quelle: bundestag.de',
-      hashtags: '#Parteiencheck #Bundestagswahl #Wahlversprechen'
+      hashtags: '#Parteiencheck #Bundestagswahl #Wahlversprechen',
+      icon: 'rank'
     });
   }
 
@@ -255,7 +302,8 @@
         bottomText: excerpt(stripLeadLabel(resultText), 160),
         badge: badgeText,
         footRight: 'Wahlversprechen-Check',
-        hashtags: '#Parteiencheck #Wahlversprechen ' + hashtag(meta.name)
+        hashtags: '#Parteiencheck #Wahlversprechen ' + hashtag(meta.name),
+        icon: status
       });
     });
   }
@@ -278,7 +326,8 @@
         bottomText: excerpt(stripLeadLabel(resultText), 160),
         badge: badgeText,
         footRight: 'Steuergeld-Check',
-        hashtags: '#Parteiencheck #Steuergeld #Bundeshaushalt'
+        hashtags: '#Parteiencheck #Steuergeld #Bundeshaushalt',
+        icon: node.dataset.status
       });
     });
   }
@@ -299,7 +348,8 @@
       accent: NEUTRAL_ACCENT, dotColor: NEUTRAL_ACCENT,
       kicker, headline, rows,
       footRight: 'Quelle: bundeshaushalt.de',
-      hashtags: '#Parteiencheck #Bundeshaushalt #Steuergeld'
+      hashtags: '#Parteiencheck #Bundeshaushalt #Steuergeld',
+      icon: 'budget'
     });
   }
 
