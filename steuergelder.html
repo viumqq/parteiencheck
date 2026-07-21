@@ -76,6 +76,9 @@
       <button class="filter-chip" data-filter="failed" aria-pressed="false"><span class="chip-dot failed"></span>Mehrkosten &amp; Verschwendung <span class="chip-count">0</span></button>
       <button class="filter-chip" data-filter="promised" aria-pressed="false"><span class="chip-dot promised"></span>Einordnung <span class="chip-count">0</span></button>
     </div>
+    <div class="tools-row">
+      <button type="button" id="collapseAllBtn" class="tool-btn">Alle einklappen</button>
+    </div>
   </div>
 </div>
 
@@ -541,7 +544,11 @@
     if (grid && grid.classList.contains('grid-collapsed')) {
       grid.classList.remove('grid-collapsed');
       const prev = grid.previousElementSibling;
-      if (prev && prev.classList.contains('section-title')) prev.classList.remove('grid-collapsed');
+      if (prev && prev.classList.contains('section-title')) {
+        prev.classList.remove('grid-collapsed');
+        prev.setAttribute('aria-expanded', 'true');
+      }
+      updateCollapseAllBtn();
     }
     el.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     if (el.classList.contains('promise-card')) {
@@ -570,15 +577,44 @@
     setFilter((chip.classList.contains('active') && f !== 'all') ? 'all' : f);
   });
 
-  // Klick auf eine Abschnitts-Überschrift klappt die darunterliegenden Karten ein/aus.
-  contentArea.querySelectorAll('.section-title').forEach(title => {
+  // Abschnitts-Überschriften sind per Klick oder Tastatur (Enter/Leertaste) einklappbar;
+  // "Alle einklappen" wirkt auf die ganze Seite.
+  function sectionPairs(scope) {
+    return [...scope.querySelectorAll('.section-title')].filter(t => t.nextElementSibling && t.nextElementSibling.classList.contains('cards-grid'));
+  }
+  function setSectionCollapsed(title, collapsed) {
     const grid = title.nextElementSibling;
-    if (!grid || !grid.classList.contains('cards-grid')) return;
-    title.addEventListener('click', () => {
-      title.classList.toggle('grid-collapsed');
-      grid.classList.toggle('grid-collapsed');
+    title.classList.toggle('grid-collapsed', collapsed);
+    grid.classList.toggle('grid-collapsed', collapsed);
+    title.setAttribute('aria-expanded', String(!collapsed));
+  }
+  const collapseAllBtn = document.getElementById('collapseAllBtn');
+  function updateCollapseAllBtn() {
+    if (!collapseAllBtn) return;
+    const pairs = sectionPairs(contentArea);
+    const allCollapsed = pairs.length > 0 && pairs.every(t => t.classList.contains('grid-collapsed'));
+    collapseAllBtn.textContent = allCollapsed ? 'Alle ausklappen' : 'Alle einklappen';
+  }
+  sectionPairs(contentArea).forEach(title => {
+    title.setAttribute('role', 'button');
+    title.setAttribute('tabindex', '0');
+    title.setAttribute('aria-expanded', 'true');
+    const toggle = () => { setSectionCollapsed(title, !title.classList.contains('grid-collapsed')); updateCollapseAllBtn(); };
+    title.addEventListener('click', toggle);
+    title.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      toggle();
     });
   });
+  if (collapseAllBtn) {
+    collapseAllBtn.addEventListener('click', () => {
+      const pairs = sectionPairs(contentArea);
+      const allCollapsed = pairs.length > 0 && pairs.every(t => t.classList.contains('grid-collapsed'));
+      pairs.forEach(t => setSectionCollapsed(t, !allCollapsed));
+      updateCollapseAllBtn();
+    });
+  }
 
   updateChipCounts();
 })();

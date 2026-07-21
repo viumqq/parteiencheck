@@ -78,6 +78,13 @@
       <button class="filter-chip" data-filter="failed" aria-pressed="false"><span class="chip-dot failed"></span>Nicht umgesetzt <span class="chip-count">0</span></button>
       <button class="filter-chip" data-filter="promised" aria-pressed="false"><span class="chip-dot promised"></span>Versprochen <span class="chip-count">0</span></button>
     </div>
+    <div class="tools-row">
+      <div class="search-bar">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="cardSearch" class="search-input" placeholder="Suche nach Thema, Titel oder Text …" aria-label="Versprechen durchsuchen">
+      </div>
+      <button type="button" id="collapseAllBtn" class="tool-btn">Alle einklappen</button>
+    </div>
   </div>
 </div>
 
@@ -1665,8 +1672,10 @@
   const nav = document.querySelector('.party-nav');
   const filterBar = document.querySelector('.filter-bar');
   const contentArea = document.querySelector('.content-area');
+  const searchInput = document.getElementById('cardSearch');
   let currentFilter = 'all';
   let currentParty = 'spd';
+  let searchQuery = '';
 
   const smooth = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
@@ -1802,7 +1811,9 @@
     if (!panel) return;
     let visible = 0;
     panel.querySelectorAll('.promise-card').forEach(card => {
-      const show = currentFilter === 'all' || card.dataset.status === currentFilter;
+      const statusOk = currentFilter === 'all' || card.dataset.status === currentFilter;
+      const searchOk = !searchQuery || card.textContent.toLowerCase().includes(searchQuery);
+      const show = statusOk && searchOk;
       card.classList.toggle('hidden', !show);
       if (show) visible++;
     });
@@ -1816,9 +1827,9 @@
     if (!empty) {
       empty = document.createElement('div');
       empty.className = 'empty-state hidden';
-      empty.textContent = 'Keine Einträge mit diesem Status.';
       panel.appendChild(empty);
     }
+    empty.textContent = searchQuery ? 'Keine Treffer für „' + searchInput.value.trim() + '“.' : 'Keine Einträge mit diesem Status.';
     empty.classList.toggle('hidden', visible !== 0);
   }
 
@@ -1850,6 +1861,7 @@
     }
     updateChipCounts();
     applyFilter();
+    updateCollapseAllBtn();
   }
 
   function setFilter(filter) {
@@ -1890,16 +1902,55 @@
 
   window.addEventListener('hashchange', () => showParty(location.hash.slice(1) || 'spd', false));
 
-  // Klick auf eine Abschnitts-Überschrift ("Bilanz aus der Ampel-Koalition" etc.)
-  // klappt die darunterliegenden Karten ein/aus.
-  contentArea.querySelectorAll('.section-title').forEach(title => {
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      searchQuery = searchInput.value.trim().toLowerCase();
+      applyFilter();
+    });
+  }
+
+  // Abschnitts-Überschriften ("Bilanz aus der Ampel-Koalition" etc.) sind per Klick
+  // oder Tastatur (Enter/Leertaste) einklappbar; "Alle einklappen" wirkt auf die
+  // gerade aktive Partei.
+  function sectionPairs(scope) {
+    return [...scope.querySelectorAll('.section-title')].filter(t => t.nextElementSibling && t.nextElementSibling.classList.contains('cards-grid'));
+  }
+  function setSectionCollapsed(title, collapsed) {
     const grid = title.nextElementSibling;
-    if (!grid || !grid.classList.contains('cards-grid')) return;
-    title.addEventListener('click', () => {
-      title.classList.toggle('grid-collapsed');
-      grid.classList.toggle('grid-collapsed');
+    title.classList.toggle('grid-collapsed', collapsed);
+    grid.classList.toggle('grid-collapsed', collapsed);
+    title.setAttribute('aria-expanded', String(!collapsed));
+  }
+  const collapseAllBtn = document.getElementById('collapseAllBtn');
+  function updateCollapseAllBtn() {
+    const panel = document.querySelector('.party-panel.active');
+    if (!panel || !collapseAllBtn) return;
+    const pairs = sectionPairs(panel);
+    const allCollapsed = pairs.length > 0 && pairs.every(t => t.classList.contains('grid-collapsed'));
+    collapseAllBtn.textContent = allCollapsed ? 'Alle ausklappen' : 'Alle einklappen';
+  }
+  sectionPairs(contentArea).forEach(title => {
+    title.setAttribute('role', 'button');
+    title.setAttribute('tabindex', '0');
+    title.setAttribute('aria-expanded', 'true');
+    const toggle = () => { setSectionCollapsed(title, !title.classList.contains('grid-collapsed')); updateCollapseAllBtn(); };
+    title.addEventListener('click', toggle);
+    title.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      toggle();
     });
   });
+  if (collapseAllBtn) {
+    collapseAllBtn.addEventListener('click', () => {
+      const panel = document.querySelector('.party-panel.active');
+      if (!panel) return;
+      const pairs = sectionPairs(panel);
+      const allCollapsed = pairs.length > 0 && pairs.every(t => t.classList.contains('grid-collapsed'));
+      pairs.forEach(t => setSectionCollapsed(t, !allCollapsed));
+      updateCollapseAllBtn();
+    });
+  }
 
   initStats();
   showParty(location.hash.slice(1) || 'spd', false);
