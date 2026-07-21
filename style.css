@@ -229,12 +229,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    cursor: pointer;
+    user-select: none;
   }
+  .section-title::before { content: '▾'; font-size: 9px; color: var(--ink-3); flex-shrink: 0; }
+  .section-title.grid-collapsed::before { content: '▸'; }
   .section-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
   .section-title.hidden { display: none; }
 
   .cards-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 8px; }
-  .cards-grid.hidden { display: none; }
+  .cards-grid.hidden, .cards-grid.grid-collapsed { display: none; }
   @media (min-width: 1024px) {
     .cards-grid { grid-template-columns: 1fr; }
   }
@@ -459,6 +463,11 @@
     box-shadow: var(--shadow);
   }
   .compare-card:empty { display: none; }
+  .compare-details > summary { cursor: pointer; list-style: none; display: flex; align-items: flex-start; gap: 10px; }
+  .compare-details > summary::-webkit-details-marker { display: none; }
+  .compare-details > summary::before { content: '▾'; color: var(--ink-3); font-size: 11px; margin-top: 4px; flex-shrink: 0; }
+  .compare-details:not([open]) > summary::before { content: '▸'; }
+  .compare-details > .compare-rows { margin-top: 14px; }
   .compare-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 14px 0; }
   .compare-tile {
     background: var(--tile);
