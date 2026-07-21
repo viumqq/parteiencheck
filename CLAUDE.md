@@ -8,14 +8,20 @@ Domain: www.parteiencheck.org (bei Netlify als Primary). Betreiber: viumqq.
 - `steuergelder.html` — Steuergeld-Check (27 Karten, 6 Themen, Haushalts-Balken).
 - `teilen.html` — Zum Teilen: screenshotbare Instagram-Story-Karten (9:16, Post-Format entfernt),
   Inhalte per `fetch()` live aus index.html/steuergelder.html gezogen, keine eigenen Daten.
-  Großes Status-/Themen-Icon je Karte als Hintergrund-Grafik (gegen leere Flächen).
+  Kartendesign reichweiten-optimiert: Marken-Zeile, Vorher/Nachher (Versprochen/Ergebnis),
+  Rang-Medaillen, Hashtags, großes Status-/Themen-Icon je Karte als Hintergrund-Grafik —
+  Inhaltsdichte passt sich per Container-Query der Kartengröße an.
 - `style.css` — gemeinsames CSS aller drei Seiten.
+- `robots.txt`, `sitemap.xml` — SEO-Grundlagen.
+- `og-index.png`, `og-steuergelder.png`, `og-teilen.png` — Social-Vorschaubilder (1200×630).
 - Seitenmenü oben verbindet alle drei Seiten.
 
 ## Design
 Schwarz-Weiß-Dashboard, Parteifarben nur als Akzent, Ampelfarben für Status. Nur Inter-Font,
 heller Modus. Mobil: Partei-Kacheln im 2-Spalten-Raster, Status-Filter klebt. Statistiken
-werden per JS live aus den Karten berechnet (nicht hartkodiert).
+werden per JS live aus den Karten berechnet (nicht hartkodiert). Desktop: Versprechen-Karten
+einspaltig (volle Breite des Hauptcontainers), nicht im 2er-Raster. Favicon: einfaches
+schwarzes Balkendiagramm (Inline-SVG, kein Asset).
 
 ## Quellen-Regel (wichtig)
 NUR offizielle Quellen: bundestag.de, dip.bundestag.de, bundesregierung.de, Ministerien,
@@ -40,7 +46,8 @@ Keine Medien/Zeitungen/Blogs. Bewertungen = Prüfergebnisse, keine Meinung.
 
 ## Offener Stand (bei Sessionstart prüfen)
 - Offen: PR #18 (teilen.html — Post-Format entfernt, Story-Karten größer/moderner mit
-  Icon-Grafiken) auf Netlify-Vorschau, wartet auf Freigabe zum Mergen.
+  Icon-Grafiken; Vergleichsblock + Abschnitts-Überschriften einklappbar) auf Netlify-Vorschau,
+  wartet auf Freigabe zum Mergen.
 - Lokaler Shortcut eingerichtet: Funktion `parteiencheck` in `~/.zshrc` (cd + `claude` Start).
 - Dritte Seite `teilen.html` ("Zum Teilen") live: screenshotbare Instagram-Story-Karten
   mit Live-Daten aus `index.html`/`steuergelder.html` (per `fetch()` + `data-share="1"`-
