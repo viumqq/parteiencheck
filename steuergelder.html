@@ -537,6 +537,12 @@
     const el = document.getElementById(li.dataset.target);
     if (!el) return;
     if (currentFilter !== 'all') setFilter('all');
+    const grid = el.closest('.cards-grid');
+    if (grid && grid.classList.contains('grid-collapsed')) {
+      grid.classList.remove('grid-collapsed');
+      const prev = grid.previousElementSibling;
+      if (prev && prev.classList.contains('section-title')) prev.classList.remove('grid-collapsed');
+    }
     el.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     if (el.classList.contains('promise-card')) {
       el.classList.remove('card-flash');
@@ -562,6 +568,16 @@
     const f = chip.dataset.filter;
     // Erneuter Klick auf den aktiven Filter wählt ihn ab (zurück zu "Alle")
     setFilter((chip.classList.contains('active') && f !== 'all') ? 'all' : f);
+  });
+
+  // Klick auf eine Abschnitts-Überschrift klappt die darunterliegenden Karten ein/aus.
+  contentArea.querySelectorAll('.section-title').forEach(title => {
+    const grid = title.nextElementSibling;
+    if (!grid || !grid.classList.contains('cards-grid')) return;
+    title.addEventListener('click', () => {
+      title.classList.toggle('grid-collapsed');
+      grid.classList.toggle('grid-collapsed');
+    });
   });
 
   updateChipCounts();

@@ -1766,16 +1766,22 @@
     });
     data.sort((a, b) => (b.pct - a.pct) || (b.done - a.done));
     box.innerHTML =
-      '<div class="promise-topic">Parteien im Vergleich · automatisch berechnet</div>' +
-      '<div class="promise-title">Wie viel Prozent der Versprechen wurden umgesetzt?</div>' +
-      '<div class="compare-rows">' + data.map(d =>
-        '<button class="compare-row" data-party="' + d.id + '" title="Zu ' + d.name + ' springen">' +
-          '<span class="cr-name"><span class="dot" style="background:' + d.color + '"></span>' + d.name + '</span>' +
-          '<span class="cr-bar"><span style="width:' + d.pct + '%;background:var(--st-done)"></span></span>' +
-          '<span class="cr-nums"><b class="n-done">' + d.pct + ' %</b> (' + d.done + ' von ' + d.all + ')</span>' +
-        '</button>'
-      ).join('') + '</div>' +
-      '<p class="compare-note">Umsetzen kann nur, wer (mit)regiert — Forderungen der Opposition bleiben deshalb bei 0 %. Klick auf eine Zeile öffnet die Details der Partei.</p>';
+      '<details class="compare-details" open>' +
+        '<summary>' +
+          '<div>' +
+            '<div class="promise-topic">Parteien im Vergleich · automatisch berechnet</div>' +
+            '<div class="promise-title">Wie viel Prozent der Versprechen wurden umgesetzt?</div>' +
+          '</div>' +
+        '</summary>' +
+        '<div class="compare-rows">' + data.map(d =>
+          '<button class="compare-row" data-party="' + d.id + '" title="Zu ' + d.name + ' springen">' +
+            '<span class="cr-name"><span class="dot" style="background:' + d.color + '"></span>' + d.name + '</span>' +
+            '<span class="cr-bar"><span style="width:' + d.pct + '%;background:var(--st-done)"></span></span>' +
+            '<span class="cr-nums"><b class="n-done">' + d.pct + ' %</b> (' + d.done + ' von ' + d.all + ')</span>' +
+          '</button>'
+        ).join('') + '</div>' +
+        '<p class="compare-note">Umsetzen kann nur, wer (mit)regiert — Forderungen der Opposition bleiben deshalb bei 0 %. Klick auf eine Zeile öffnet die Details der Partei.</p>' +
+      '</details>';
     box.addEventListener('click', e => {
       const row = e.target.closest('[data-party]');
       if (row) showParty(row.dataset.party, true);
@@ -1883,6 +1889,17 @@
   updateToolbarOffset();
 
   window.addEventListener('hashchange', () => showParty(location.hash.slice(1) || 'spd', false));
+
+  // Klick auf eine Abschnitts-Überschrift ("Bilanz aus der Ampel-Koalition" etc.)
+  // klappt die darunterliegenden Karten ein/aus.
+  contentArea.querySelectorAll('.section-title').forEach(title => {
+    const grid = title.nextElementSibling;
+    if (!grid || !grid.classList.contains('cards-grid')) return;
+    title.addEventListener('click', () => {
+      title.classList.toggle('grid-collapsed');
+      grid.classList.toggle('grid-collapsed');
+    });
+  });
 
   initStats();
   showParty(location.hash.slice(1) || 'spd', false);
