@@ -26,8 +26,8 @@ Keine Medien/Zeitungen/Blogs. Bewertungen = Prüfergebnisse, keine Meinung.
 1. Entwicklung immer auf Branch `claude/docker-setup-workflow-9j55aj`.
 2. Commit + Push → Pull Request → Netlify Deploy Preview.
 3. Nutzer sieht Vorschau, gibt frei → PR mergen → live. Nie ohne Freigabe live schalten.
-4. **Nie `git push` ohne explizite Freigabe für genau diesen Push** — frühere Zustimmung
-   gilt nicht automatisch für neue Commits, jedes Mal neu fragen. Lokal committen ist ok.
+4. Nach jedem Commit automatisch pushen (keine Rückfrage nötig) und sofort den
+   Netlify-Vorschau-Link mitschicken, ohne dass danach gefragt werden muss.
 5. **Keine Screenshots im Chat zeigen** — dem Nutzer genügt die Netlify-Vorschau.
    (Playwright trotzdem intern zur Prüfung nutzen, nur nicht mit SendUserFile posten.)
 6. Lokaler Test: `python3 -m http.server 8080` + Playwright/Chromium unter /opt/pw-browsers/chromium.
