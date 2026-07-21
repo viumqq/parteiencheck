@@ -160,22 +160,6 @@
   .search-input::placeholder { color: var(--ink-3); }
   .search-input:focus { outline: none; border-color: var(--ink); }
   .search-input::-webkit-search-cancel-button { cursor: pointer; }
-  .tool-btn {
-    flex-shrink: 0;
-    padding: 8px 14px;
-    min-height: 38px;
-    border-radius: 999px;
-    border: 1.5px solid var(--line);
-    background: var(--bg);
-    color: var(--ink-2);
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-  }
-  .tool-btn:hover { border-color: var(--ink); color: var(--ink); }
-
   /* MAIN LAYOUT */
   .main { max-width: 1200px; margin: 0 auto; padding: 24px 24px 56px; }
   .content-area { min-width: 0; scroll-margin-top: 130px; }

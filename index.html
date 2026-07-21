@@ -83,7 +83,6 @@
         <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="search" id="cardSearch" class="search-input" placeholder="Suche nach Thema, Titel oder Text …" aria-label="Versprechen durchsuchen">
       </div>
-      <button type="button" id="collapseAllBtn" class="tool-btn">Alle einklappen</button>
     </div>
   </div>
 </div>
@@ -1861,7 +1860,6 @@
     }
     updateChipCounts();
     applyFilter();
-    updateCollapseAllBtn();
   }
 
   function setFilter(filter) {
@@ -1910,8 +1908,7 @@
   }
 
   // Abschnitts-Überschriften ("Bilanz aus der Ampel-Koalition" etc.) sind per Klick
-  // oder Tastatur (Enter/Leertaste) einklappbar; "Alle einklappen" wirkt auf die
-  // gerade aktive Partei.
+  // oder Tastatur (Enter/Leertaste) einklappbar.
   function sectionPairs(scope) {
     return [...scope.querySelectorAll('.section-title')].filter(t => t.nextElementSibling && t.nextElementSibling.classList.contains('cards-grid'));
   }
@@ -1921,19 +1918,11 @@
     grid.classList.toggle('grid-collapsed', collapsed);
     title.setAttribute('aria-expanded', String(!collapsed));
   }
-  const collapseAllBtn = document.getElementById('collapseAllBtn');
-  function updateCollapseAllBtn() {
-    const panel = document.querySelector('.party-panel.active');
-    if (!panel || !collapseAllBtn) return;
-    const pairs = sectionPairs(panel);
-    const allCollapsed = pairs.length > 0 && pairs.every(t => t.classList.contains('grid-collapsed'));
-    collapseAllBtn.textContent = allCollapsed ? 'Alle ausklappen' : 'Alle einklappen';
-  }
   sectionPairs(contentArea).forEach(title => {
     title.setAttribute('role', 'button');
     title.setAttribute('tabindex', '0');
     title.setAttribute('aria-expanded', 'true');
-    const toggle = () => { setSectionCollapsed(title, !title.classList.contains('grid-collapsed')); updateCollapseAllBtn(); };
+    const toggle = () => setSectionCollapsed(title, !title.classList.contains('grid-collapsed'));
     title.addEventListener('click', toggle);
     title.addEventListener('keydown', e => {
       if (e.key !== 'Enter' && e.key !== ' ') return;
@@ -1941,16 +1930,6 @@
       toggle();
     });
   });
-  if (collapseAllBtn) {
-    collapseAllBtn.addEventListener('click', () => {
-      const panel = document.querySelector('.party-panel.active');
-      if (!panel) return;
-      const pairs = sectionPairs(panel);
-      const allCollapsed = pairs.length > 0 && pairs.every(t => t.classList.contains('grid-collapsed'));
-      pairs.forEach(t => setSectionCollapsed(t, !allCollapsed));
-      updateCollapseAllBtn();
-    });
-  }
 
   initStats();
   showParty(location.hash.slice(1) || 'spd', false);
