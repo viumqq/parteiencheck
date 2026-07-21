@@ -44,9 +44,9 @@
 <header>
   <div class="header-inner">
     <nav class="site-nav" aria-label="Seiten">
-      <a href="index.html" class="site-tab">🗳️ Wahlversprechen</a>
-      <a href="steuergelder.html" class="site-tab">💶 Steuergeld-Check</a>
-      <a href="teilen.html" class="site-tab active" aria-current="page">📱 Zum Teilen</a>
+      <a href="index.html" class="site-tab">Wahlversprechen</a>
+      <a href="steuergelder.html" class="site-tab">Steuergeld-Check</a>
+      <a href="teilen.html" class="site-tab active" aria-current="page">Zum Teilen</a>
     </nav>
     <div class="header-label">Politische Transparenz · Deutschland</div>
     <h1>Die Fakten <span>zum Teilen</span></h1>
@@ -61,8 +61,8 @@
 <div class="toolbar share-toolbar">
   <div class="header-inner" style="padding:0; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; max-width:1200px; margin:0 auto; width:100%;">
     <div class="format-toggle" role="group" aria-label="Format wählen">
-      <button class="format-btn active" data-fmt="story">📱 Story (9:16)</button>
-      <button class="format-btn" data-fmt="post">🖼️ Post (1:1)</button>
+      <button class="format-btn active" data-fmt="story">Story (9:16)</button>
+      <button class="format-btn" data-fmt="post">Post (1:1)</button>
     </div>
     <span class="share-hint">Tipp: Karte antippen → Vollbild → Screenshot</span>
   </div>
@@ -73,16 +73,16 @@
 
     <p class="share-intro">Alle Karten unten werden beim Laden dieser Seite live aus den Karten von <strong>Wahlversprechen-Check</strong> und <strong>Steuergeld-Check</strong> berechnet — es gibt keine doppelt gepflegten Zahlen. Ändert sich dort ein Eintrag, ändert sich die Karte hier automatisch mit.</p>
 
-    <div class="section-title">🏆 Ranking — wer hält, was er verspricht?</div>
+    <div class="section-title">Ranking — wer hält, was er verspricht?</div>
     <div class="share-grid" id="grid-rank"></div>
 
-    <div class="section-title">📋 Einzelne Wahlversprechen</div>
+    <div class="section-title">Einzelne Wahlversprechen</div>
     <div class="share-grid" id="grid-promises"></div>
 
-    <div class="section-title">💶 Steuergeld-Highlights</div>
+    <div class="section-title">Steuergeld-Highlights</div>
     <div class="share-grid" id="grid-tax"></div>
 
-    <div class="section-title">📊 Haushalts-Überblick</div>
+    <div class="section-title">Haushalts-Überblick</div>
     <div class="share-grid" id="grid-budget"></div>
 
   </div>
@@ -139,7 +139,7 @@
 
   function stripLeadLabel(text) {
     // Führendes Emoji weg (steht schon im Badge) + Label vor dem Doppelpunkt,
-    // damit der Kartentext nicht "✅ Umgesetzt: Umgesetzt: ..." doppelt zeigt.
+    // damit der Kartentext nicht "Umgesetzt: Umgesetzt: ..." doppelt zeigt.
     const c = clean(text).replace(/^\p{Extended_Pictographic}️?\s*/u, '');
     const idx = c.indexOf(':');
     return (idx > -1 && idx < 40) ? c.slice(idx + 1).trim() : c;
@@ -166,7 +166,7 @@
   }
 
   function brandRow() {
-    return h('div', { class: 'share-brand' }, [h('span', {}, '⚖️'), h('span', {}, 'PARTEIENCHECK.ORG')]);
+    return h('div', { class: 'share-brand' }, [h('span', {}, 'PARTEIENCHECK.ORG')]);
   }
 
   function factCard({ accent, dotColor, kicker, headline, topLabel, topText, bottomLabel, bottomText, badge, footRight, hashtags }) {
