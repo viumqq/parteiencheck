@@ -541,7 +541,10 @@
     if (grid && grid.classList.contains('grid-collapsed')) {
       grid.classList.remove('grid-collapsed');
       const prev = grid.previousElementSibling;
-      if (prev && prev.classList.contains('section-title')) prev.classList.remove('grid-collapsed');
+      if (prev && prev.classList.contains('section-title')) {
+        prev.classList.remove('grid-collapsed');
+        prev.setAttribute('aria-expanded', 'true');
+      }
     }
     el.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     if (el.classList.contains('promise-card')) {
@@ -570,13 +573,26 @@
     setFilter((chip.classList.contains('active') && f !== 'all') ? 'all' : f);
   });
 
-  // Klick auf eine Abschnitts-Überschrift klappt die darunterliegenden Karten ein/aus.
-  contentArea.querySelectorAll('.section-title').forEach(title => {
+  // Abschnitts-Überschriften sind per Klick oder Tastatur (Enter/Leertaste) einklappbar.
+  function sectionPairs(scope) {
+    return [...scope.querySelectorAll('.section-title')].filter(t => t.nextElementSibling && t.nextElementSibling.classList.contains('cards-grid'));
+  }
+  function setSectionCollapsed(title, collapsed) {
     const grid = title.nextElementSibling;
-    if (!grid || !grid.classList.contains('cards-grid')) return;
-    title.addEventListener('click', () => {
-      title.classList.toggle('grid-collapsed');
-      grid.classList.toggle('grid-collapsed');
+    title.classList.toggle('grid-collapsed', collapsed);
+    grid.classList.toggle('grid-collapsed', collapsed);
+    title.setAttribute('aria-expanded', String(!collapsed));
+  }
+  sectionPairs(contentArea).forEach(title => {
+    title.setAttribute('role', 'button');
+    title.setAttribute('tabindex', '0');
+    title.setAttribute('aria-expanded', 'true');
+    const toggle = () => setSectionCollapsed(title, !title.classList.contains('grid-collapsed'));
+    title.addEventListener('click', toggle);
+    title.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      toggle();
     });
   });
 
