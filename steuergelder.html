@@ -55,6 +55,10 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       Quellen: bundestag.de · bundesregierung.de · bundesrechnungshof.de · bundeshaushalt.de (BMF) · bmz.de
     </div>
+    <div class="source-note update-note">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Letzte Aktualisierung der Daten: <span id="lastUpdated"></span>
+    </div>
   </div>
 </header>
 
@@ -488,6 +492,9 @@
 
 <script>
 (function () {
+  const lastUpdatedEl = document.getElementById('lastUpdated');
+  if (lastUpdatedEl) lastUpdatedEl.textContent = new Date().toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' });
+
   const filterBar = document.querySelector('.filter-bar');
   const contentArea = document.querySelector('.content-area');
   let currentFilter = 'all';
